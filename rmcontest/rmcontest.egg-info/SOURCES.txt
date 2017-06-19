@@ -1,0 +1,9 @@
+MANIFEST.in
+rmcontest/__init__.py
+rmcontest/rmcontest.py
+rmcontest/schema.sql
+rmcontest.egg-info/PKG-INFO
+rmcontest.egg-info/SOURCES.txt
+rmcontest.egg-info/dependency_links.txt
+rmcontest.egg-info/requires.txt
+rmcontest.egg-info/top_level.txt

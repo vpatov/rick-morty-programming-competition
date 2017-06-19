@@ -1,5 +1,0 @@
-Rick is trying to calibrate his portal gun to get him and Morty to Alpha-Betrium, so that he can collect some money that Magma-Q owes him from an old bet (41 shmeckles is no petty change, thats $6068 USD!). His dial isn't working properly, so he has to configure the destination manually. To do this, he needs to generate the 5823th shleeble number. He knows the first few shleeble numbers (counting from 1) are 0, 1, and 6. He can't remember the rest..
-
-The formula for the nth shleeble number shleeble(n) = (T(n) * floor(shleeble(n-1) / 5)) - (shleeble(n+1)) + shleeble(n-2) * sheeble(floor(n/2))
-
-What is the 5823th shleeble number (mod 1000000)?

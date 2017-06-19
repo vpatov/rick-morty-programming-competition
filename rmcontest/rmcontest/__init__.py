@@ -1,0 +1,1 @@
+from .rmcontest import app
