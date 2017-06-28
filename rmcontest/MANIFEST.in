@@ -1,3 +1,4 @@
 graft rmcontest/templates
 graft rmcontest/static
+graft rmcontest/images
 include rmcontest/schema.sql

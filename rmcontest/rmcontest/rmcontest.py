@@ -67,7 +67,21 @@ def add_entry():
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 	
-	
+@app.route('/remove',methods=['POST'])
+def remove_entry():
+
+    if not session.get('logged_in'):
+        abort(401)
+    db = get_db()
+    print request.form['remove']
+    print request.form.keys()
+
+    flash('Trying to delete')
+    db.execute('delete from entries where title=?',(request.form['remove'],))
+    db.commit()
+    flash('Entry was deleted.')
+    return redirect(url_for('show_entries'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -87,3 +101,33 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+
+@app.route('/problems')
+def problems():
+    return render_template('problems.html')
+
+@app.route('/problem1')
+def problem1():
+    return render_template('problem1.html')
+
+@app.route('/problem2')
+def problem2():
+    return render_template('problem2.html')
+
+@app.route('/pasdasdasd')
+def problem3():
+    return render_template('problem3.html')
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
