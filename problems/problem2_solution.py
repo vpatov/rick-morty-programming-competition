@@ -21,11 +21,18 @@ def gen_s(n):
 	i = 3
 	nums = nums + ([0] * (n-len(nums) + 1))
 	while(i <= n):
-		nums[i] = abs((nums[i-1] - (t_nums[i-1] * (nums[i-1]//5))) + (nums[i-2]))
+		nums[i] = (nums[i-2] - (t_nums[i-1] * (nums[i-1]*11))) 
 		i += 1
 
 gen_t(n)
 gen_s(n)
 
-print nums[n-1] % 1000000
+
+# print nums[n-1] % 1000000
+
+def get_solution():
+	return nums[n-1] % 1000000
+
+
+
 

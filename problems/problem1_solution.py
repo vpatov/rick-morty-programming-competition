@@ -15,7 +15,7 @@ def distance(x1,y1,x2,y2):
 def utility(galaxy,sx,sy):
     benefit = galaxy[3]
     x,y = galaxy[1],galaxy[2]
-    return benefit**2 - ((distance(sx,sy,x,y) + 36) // 3)
+    return benefit**2 - ((distance(sx,sy,x,y) + 36) / 3)
 
 max_utility = 0
 max_galaxies = None,None
@@ -29,13 +29,9 @@ for i in range(0,len(galaxies)):
             max_galaxies = galaxies[i][0],galaxies[j][0]
 
 
-print max_utility
-print max_galaxies
+# print max_utility
+# print max_galaxies
 
+def get_solution():
+    return max_utility
 
-# galaxy1 = ["B-142325X", "30","40", "200"]
-# galaxy2 = ["P-44123C", "-10","40", "300"]
-
-# print utility(galaxy1,0,0)
-# print utility(galaxy2,int(galaxy1[1]),int(galaxy1[2]))
- 

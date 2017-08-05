@@ -1,5 +1,5 @@
 grids = []
-f = open('cosmic_readouts.txt','r')
+f = open('problem3_input.txt','r')
 while(True):
 	grid = []
 	line = f.readline()
@@ -20,7 +20,16 @@ def count_size_zone(grid,i,j,visited):
 	else:
 		if grid[i][j] == '#':
 			visited.add(cur)
-			neighbors = tuple(filter(lambda tup: tup[0] < len(grid) and tup[1] < len(grid[i]) and tup[0] >= 0 and tup[1] >= 0,get_neighbors(i,j)))
+			neighbors = tuple(
+				filter(
+					lambda tup: 
+						tup[0] < len(grid) and 
+						tup[1] < len(grid[i]) and 
+						tup[0] >= 0 and 
+						tup[1] >= 0,
+					get_neighbors(i,j)
+					)
+				)
 			res = 0
 			for x,y in neighbors:
 				res += count_size_zone(grid,x,y,visited)
@@ -42,7 +51,14 @@ def count_splin_zones(grid):
 	return (sorted(sizes)[::-1])
 
 
-
+count = 0
 for grid in grids:
-	count_splin_zones(grid)
+	sizes = count_splin_zones(grid)
+	if sizes[3] >= 5:
+		count += 1
+print(count)
 
+
+
+def get_solution():
+	return count

@@ -1,133 +1,87 @@
-import os
-import sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
-	 
+from flask import Flask, request, redirect, url_for, abort, \
+     render_template, Response
+	
+from flask.ext.navigation import Navigation
+
+from functools import wraps
+import db
+
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , rmcontest.py
 
-# Load default config and override config from an environment variable
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'rmcontest.db'),
-    SECRET_KEY='development key',
-    USERNAME='admin',
-    PASSWORD='default'
-))
-app.config.from_envvar('RMCONTEST_SETTINGS', silent=True)
 
-def connect_db():
-    """Connects to the specific database."""
-    rv = sqlite3.connect(app.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
-    return rv
+
+
+contest_started = False
+
+
 	
-def init_db():
-    db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
 
-@app.cli.command('initdb')
-def initdb_command():
-    """Initializes the database."""
-    init_db()
-    print('Initialized the database.')
+##########################################################################
+######################## AUTHENTICATION ##################################
+##########################################################################
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        print("AUTH:",auth)
+
+        if not auth:
+            return authenticate()
+
+        authorized, reason = db.check_auth(auth.username,auth.password)
+        if not authorized:
+            return authenticate()
+
+        return f(*args, **kwargs)
+    return decorated
 	
-def get_db():
-    """Opens a new database connection if there is none yet for the
-    current application context.
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = connect_db()
-    return g.sqlite_db
-	
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-		
+#------------------------------------------------------------------------#
+##########################################################################
 
-@app.route('/')
-def show_entries():
-    db = get_db()
-    cur = db.execute('select title, text from entries order by id desc')
-    entries = cur.fetchall()
-    return render_template('show_entries.html', entries=entries)
-	
-@app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    db = get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
-	
-@app.route('/remove',methods=['POST'])
-def remove_entry():
 
-    if not session.get('logged_in'):
-        abort(401)
-    db = get_db()
-    print request.form['remove']
-    print request.form.keys()
 
-    flash('Trying to delete')
-    db.execute('delete from entries where title=?',(request.form['remove'],))
-    db.commit()
-    flash('Entry was deleted.')
-    return redirect(url_for('show_entries'))
+##########################################################################
+######################## NAVIGATION BAR ##################################
+##########################################################################
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
-	
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
+nav = Navigation(app)
+nav.init_app(app)
 
+nav.Bar('top', [
+    nav.Item('Home', 'home_page'),
+    # nav.Item('Latest News', 'news', {'page': 1}),
+])
+
+
+# @app.route('/news/<int:page>')
+# def news(page):
+#     return render_template('news.html', page=page)
+
+
+#------------------------------------------------------------------------#
+##########################################################################
 
 @app.route('/problems')
+@requires_auth
 def problems():
-    return render_template('problems.html')
+    return render_template('problems.html',problems=[1,2,3])
 
-@app.route('/problem1')
-def problem1():
-    return render_template('problem1.html')
 
-@app.route('/problem2')
-def problem2():
-    return render_template('problem2.html')
+@app.route('/')
+@requires_auth
+def home_page():
+    return render_template('layout.html',problems=[1,2,3])
 
-@app.route('/pasdasdasd')
-def problem3():
-    return render_template('problem3.html')
 
-@app.context_processor
-def override_url_for():
-    return dict(url_for=dated_url_for)
 
-def dated_url_for(endpoint, **values):
-    if endpoint == 'static':
-        filename = values.get('filename', None)
-        if filename:
-            file_path = os.path.join(app.root_path,
-                                     endpoint, filename)
-            values['q'] = int(os.stat(file_path).st_mtime)
-    return url_for(endpoint, **values)
+

@@ -23,6 +23,7 @@ The cosmic signature read-outs show blorg and splin zones. The read-outs are rep
 #---####---
 -----##----
 has five splin zones, only three of at least size 5
+(sizes are: )
 
 
 #--------------
