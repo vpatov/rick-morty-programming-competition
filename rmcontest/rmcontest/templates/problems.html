@@ -1,6 +1,15 @@
-{% extends "layout.html" %}
+{% extends "index.html" %}
 
 {% block body %}
-    Ze problems
+    {% for problem in problems %}
+    <div class=problems_list>
+    <ul>
+    <li>
+    <a href="{{url_for('problem_page',problem_num=problem)}}"> {{"~!#$%$#!~"*problem}}-- PROBLEM {{problem}} --{{"~!#$%$#!~"*problem}}~</a> 
+    </li>
+    </ul>
+    </div>
+    {% endfor %}
+    
     
 {% endblock %}

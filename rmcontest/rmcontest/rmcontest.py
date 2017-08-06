@@ -1,10 +1,11 @@
 from flask import Flask, request, redirect, url_for, abort, \
      render_template, Response
 	
-from flask.ext.navigation import Navigation
+from flask_navigation import Navigation
 
 from functools import wraps
 import db
+import problems
 
 
 app = Flask(__name__) # create the application instance :)
@@ -59,6 +60,7 @@ nav.init_app(app)
 
 nav.Bar('top', [
     nav.Item('Home', 'home_page'),
+    nav.Item('Problems','problems')
     # nav.Item('Latest News', 'news', {'page': 1}),
 ])
 
@@ -71,6 +73,9 @@ nav.Bar('top', [
 #------------------------------------------------------------------------#
 ##########################################################################
 
+
+
+
 @app.route('/problems')
 @requires_auth
 def problems():
@@ -80,8 +85,13 @@ def problems():
 @app.route('/')
 @requires_auth
 def home_page():
-    return render_template('layout.html',problems=[1,2,3])
+    return render_template('index.html')
 
 
 
 
+
+
+@app.route('/problem<problem_num>')
+def problem_page(problem_num):
+    return render_template("problem" + str(problem_num) + '.html')

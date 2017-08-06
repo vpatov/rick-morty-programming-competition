@@ -1,44 +1,103 @@
-/*#banner {
-    background:url('./images/banner.jpg');
-    width: 100%;
-    height: 100%;
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400');
+
+
+body {
+  background: black;
+  font-family: Verdana;
+  font-size: 15px;
+  color: white;
 }
 
 
-body                { font-family: sans-serif; background: black; }
-a, h1, h2           { color: #377ba8; }
-h1, h2              { font-family: "Source Code Pro", monospace; margin: 0; }
-h1                  { border-bottom: 2px solid #999; }
-h2                  { font-size: 1.2em; }
+.navbar {
+  font-family: 'Source Code Pro', sans-serif;
+  text-shadow: 0px 0px 15px #25c497;
+  font-size: 16px;
+  color: white;
+}
 
-.page               { margin: 0.8em auto; width: 60em; border: 2px solid #bab;
-                    padding: 2em; background: #ddffa0; }
-.entries            { list-style: none; margin: 0; padding: 0; }
-.entries li         { margin: 0.8em 1.2em; }
-.entries li h2      { margin-left: -1em; }
-.remove-entry       { font-size: 0.8em; border-bottom: 2px solid #ccc; }
-.remove-entry dl    { font-weight: bold; }
-.metanav            { text-align: right; font-size: 0.8em; padding: 0.3em;
-                    margin-bottom: 1em; background: black; }
-.flash              { background: #ae35F5; padding: 0.5em;
-                    border: 1px solid #aacbe2; }
-.error              { background: #f0d6d6; padding: 0.5em; }*/
+.problems_list {
+  font-family: 'Source Code Pro', sans-serif;
+  display: block;
+  font-size: 26px;
+  text-shadow: 0px 0px 20px #ff0000;
+}
 
-body {
-    background: black;
-    font-family: Verdana;
-    font-size: 30px;
+div.problems_list ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color : #b71616;
+}
+
+
+div.problems_list li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
     color: white;
 }
 
+div.problems_list li a:hover {
+    background-color: #111;
+}
 
-.metanav {
-    text-align: center; 
-    font-family: "Comic-Sans";
-    font-size: 2em; 
-    padding: 0.3em;
-    margin-bottom: 1em; 
-    }
+
+div.navbar ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+div.navbar li {
+    float: left;
+    
+}
+
+div.navbar li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: white;
+}
+
+div.navbar li a:hover {
+    background-color: #111;
+}
+
+
+/*#02030a;*/
+
+/*#283a56*/
+.description {
+  margin: 0.8em auto;
+  width: 88%;
+  border: 2px solid #bab;
+  padding: 2em;
+  background: #02030a;
+  text-shadow: 0px 0px 25px #61647a;
+  font-family: 'Source Code Pro', sans-serif;
+  /*font-family: Avenir Next Bold;*/
+  font-size: 16px;
+  color: white;
+}
+
+.code {
+  background: #1c1c1c;
+  font-family: Monospace;
+  text-shadow: None;
+  font-size: 14px;
+  color: #8ecbce;
+  width: 100%;
+  align-content: center;
+}
+
+
 
 #logo img {
   max-width: 100%;

@@ -1,0 +1,38 @@
+<!doctype html>
+<title>Rick and Morty's Programming Contest</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+<body>
+<div id="logo">
+  <a>
+    <img src="../static/images/banner.jpg" alt="Rick and Morty Programming Contest">
+  </a>
+</div>
+</body>
+
+<!-- <ul>
+    {% for item in nav.top %}
+    <li class="{{ 'active' if item.is_active else '' }}">
+        <a href="{{ item.url }}">{{ item.label }}</a>
+    </li>
+    {% endfor %}
+</ul> -->
+<p></p>
+<div class=navbar>
+<ul>
+  <li><a class="active" href="/">Home</a></li>
+  <li><a href="/problems">Problems</a></li>
+  <li><a href="/rules">Rules</a></li>
+</ul>
+</div>
+
+<p>
+{% block body %}
+<div class=page>
+
+</div>
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+

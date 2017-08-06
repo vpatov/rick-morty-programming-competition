@@ -33,5 +33,7 @@ for i in range(0,len(galaxies)):
 # print max_galaxies
 
 def get_solution():
+    return max_galaxies
     return max_utility
 
+print get_solution()

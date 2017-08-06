@@ -1,32 +1,47 @@
-{% extends "layout.html" %}
-{% block body %}
+{% extends "index.html" %}
+
+{% block description %}
   <p>
-  Rick and Morty are enjoying one of their occasional inter-galactic cruises, and are figuring out where to go next. They have a long list of galaxies that they are interested in visiting, as well as their coordinates (fortunately all the galaxies they are interested in lie on the same 2-dimensional plane). However, they only have a limited amount of fuel and time, so they decide to only visit two for now. 
+  <div class=description>
+  <p>
+  Rick and Morty are enjoying one of their occasional inter-galactic cruises, and are figuring out where to go next. They have a long list of galaxies that they are interested in visiting, as well as their coordinates (fortunately all the galaxies they are interested in lie on the same 2-dimensional plane). However, they only have a limited amount of fuel and time, so they decide to only visit <b>two</b> for now. 
   </p>
   <p>
-  Not all galaxies are made equal - some just straight up suck and have nothing to offer. So to their list they also add their estimated perceived benefit of visiting. Morty suggests to describe their utility, u, gained from visiting a galaxy X as utility(X) = benefit(x) - distance(X). Rick laughs and says, "<BLECHHH> Morty that's gotta be the dumbest idea you've ever had... Why do you even <BLECHH> try? Here.. haha... Here's how we will figure this out", and pulls out this bad boy:
+  Not all galaxies are made equal - some just straight up suck and have nothing to offer. So to their list they also add their estimated perceived benefit of visiting. Morty suggests to describe their utility, <b>u</b>, gained from visiting a galaxy X as:
   </p>
-  <blockquote><pre><code>
-utility(X) = (benefit(X))^(2) - ((distance(X) + 36) // 3))
-# // means integer division
-</code></pre></blockquote>
+ <blockquote><pre><code><div class=code>
+	utility(X) = benefit(X) - distance(X)
+  </div></code></pre></blockquote>
+  <p>
+	Rick laughs and says, "&lt;BLECHHH&gt; <b>Morty</b> that's gotta be the <b>dumbest</b> idea you've ever had... <i>Why do you even try</i>? Here.. haha... <b>Here's</b> how we'll figure this out", and pulls out this bad boy:
+  </p>
+  	<blockquote><pre><code><div class=code>
+	utility(X) = benefit(X)**2 - ((distance(X) + 36) // 3)
+	# // means integer division
+	</div></code></pre></blockquote>
+<p>Each galaxy is described as a tuple: (name, coordinates, benefit). </p>
+<p>
+The adventurers start at coordinates <code>(0,0)</code>. The total utility is found by summing the two utilities for the two galaxies. For example, if the two galaxies they visited were <code>(Alpha, (30,40), 200)</code> and (Bayta, (-10,40), 300), their total utility would be calculated as follows:
+</p>
+	<blockquote><pre><code><div class=code>
+	Alpha
+	distance between (0,0) and (30,40) -> 50
+	Benefit -> 200
+	Utility -> 200**2 - ((50 + 36) // 3) -> 40000 - 28 -> 39972
 
+	Bayta
+	distance between (30,40) and (-10,40) -> 40
+	Benefit -> 300
+	Utility -> 300**2 - ((40 + 36) // 3) -> 90000 - 25 -> 89975
 
-The adventurers start at coordinates <code>(0,0)</code>. The total utility is found by summing the two utilities for the two galaxies. For example, if the two galaxies they visited were <code>(B-142325X, (30,40), 200)</code> and (P-44123C, (-10,40), 300), their total utility would be calculated as follows:
-
-B-142325X
-distance between (0,0) and (30,40) -> 50
-Benefit -> 200
-Utility -> 200^2 - ((50 + 36) // 3) -> 40000 - 28 -> 39972
-
-P-44123C
-distance between (30,40) and (-10,40) -> 40
-Benefit -> 300
-Utility -> 300^2 - ((40 + 36) // 3) -> 90000 - 25 -> 89975
-
-Total Utility -> 39972 + 89975 -> 129947
-
+	Total Utility -> 39972 + 89975 -> 129947
+	</div></code></pre></blockquote>
 
 Here is their list of galaxies:
+<a href="/static/problems/problem1_input.txt">Galaxies</a>
+</div>
+
+What is the maximum utility that they can possibly attain according to Rick's formula? 
+P.S. Don't forget that they visit two galaxies.
 
 {% endblock %}
