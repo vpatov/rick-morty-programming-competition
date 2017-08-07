@@ -88,10 +88,20 @@ def home_page():
     return render_template('index.html')
 
 
-
+@app.route('/utilities')
+@requires_auth
+def utilities_page():
+    return render_template('utilities.html')
 
 
 
 @app.route('/problem<problem_num>')
 def problem_page(problem_num):
     return render_template("problem" + str(problem_num) + '.html')
+
+@app.route('/answer', methods=['POST'])
+def process_answer():
+    return "You answered %s to problem %s" % (request.form["answer"],request.form["problem_num"])
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
