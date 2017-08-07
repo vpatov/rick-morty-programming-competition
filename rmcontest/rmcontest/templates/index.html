@@ -10,21 +10,19 @@
 </div>
 </body>
 
-<!-- <ul>
+
+<p></p>
+<div class=navbar>
+<ul>
     {% for item in nav.top %}
     <li class="{{ 'active' if item.is_active else '' }}">
         <a href="{{ item.url }}">{{ item.label }}</a>
     </li>
     {% endfor %}
-</ul> -->
-<p></p>
-<div class=navbar>
-<ul>
-  <li><a class="active" href="/">Home</a></li>
-  <li><a href="/problems">Problems</a></li>
-  <li><a href="/utilities">Utilities</a></li>
 </ul>
 </div>
+
+
 
 <p>
 {% block body %}

@@ -34,7 +34,6 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
-        print("AUTH:",auth)
 
         if not auth:
             return authenticate()
@@ -60,14 +59,11 @@ nav.init_app(app)
 
 nav.Bar('top', [
     nav.Item('Home', 'home_page'),
-    nav.Item('Problems','problems')
-    # nav.Item('Latest News', 'news', {'page': 1}),
+    nav.Item('Problems','problems_page'),
+    nav.Item('Utilities', 'utilities_page')
 ])
 
 
-# @app.route('/news/<int:page>')
-# def news(page):
-#     return render_template('news.html', page=page)
 
 
 #------------------------------------------------------------------------#
@@ -78,13 +74,12 @@ nav.Bar('top', [
 
 @app.route('/problems')
 @requires_auth
-def problems():
+def problems_page():
     return render_template('problems.html',problems=[1,2,3])
 
 
 @app.route('/')
-@requires_auth
-def home_page():
+def home_page(nav=nav):
     return render_template('index.html')
 
 
@@ -95,13 +90,52 @@ def utilities_page():
 
 
 
-@app.route('/problem<problem_num>')
-def problem_page(problem_num):
-    return render_template("problem" + str(problem_num) + '.html')
+def process_completion(username):
+    current_time = time.time()
+    
 
+
+@requires_auth
+@app.route('/problem<problem_num>')
+def problem_page(problem_num,no_answer=False):
+    return render_template("problem" + str(problem_num) + '.html',no_answer=no_answer)
+
+@requires_auth
 @app.route('/answer', methods=['POST'])
 def process_answer():
-    return "You answered %s to problem %s" % (request.form["answer"],request.form["problem_num"])
+    problem_num = request.form['problem_num']
+    answer = request.form["answer"].strip()
+    username = request.authorization['username']
+    if answer == '':
+        answer = '"No answer, just an empty void... a desolate nether."'
+
+    correct_answer = str(db.get_problem_answer(problem_num))
+    answer_correct = correct_answer == answer
+
+    problems_left = None
+    if answer_correct:
+        problems_left = db.mark_as_completed(username,problem_num)
+
+    if problems_left == 0:
+        process_completion(username)
+
+
+
+    return render_template("feedback_template.html",answer_correct=answer_correct,answer=answer,problems_left=problems_left)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

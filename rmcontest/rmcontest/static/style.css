@@ -34,7 +34,7 @@ body {
 .problems_list {
   font-family: 'Source Code Pro', sans-serif;
   display: block;
-  font-size: 26px;
+  font-size: 22px;
   text-shadow: 0px 0px 20px #ff0000;
 }
 
@@ -150,9 +150,10 @@ input[type="text"] {
 }
 
 hr {
-  height: 6px;
-  background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
-    border: 0;
+  height: 32px;
+  background: url("http://i.imgur.com/XLjssWe.png") repeat-x 0 0;
+  border: 0;
+  background-size: 26px;
 }
 
 

@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{% block body %}
+
+{% if answer_correct %}
+Your answer: <span style="color:#201c20;"><b>{{answer}}</b></span>, is <span style="color:#10bb00;"><b>correct</b></span>! Only {{problems_left}} to go, hustle hustle!
+{% else %}
+Your answer: <span style="color:#201c20;"><b>{{answer}}</b></span>, is <span style="color:#bb1000;"><b>incorrect</b></span>. You may try again in 30 seconds. 
+{% endif %}
+
+
+{% endblock %}
