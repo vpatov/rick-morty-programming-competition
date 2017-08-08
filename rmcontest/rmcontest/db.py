@@ -2,6 +2,7 @@ import json
 import string
 import random
 import os
+import time
 import sys
 
 def gen_password(length):
@@ -45,7 +46,9 @@ def has_completed(username,problem_num):
     accounts = read_accounts()
     return problem_num in accounts[username]["progress"]
 
-
+def get_progress(username):
+    accounts = read_accounts()
+    return accounts[username]["progress"]
 
 def mark_as_completed(username,problem_num):
     """
@@ -58,6 +61,26 @@ def mark_as_completed(username,problem_num):
         accounts[username]["progress"][problem_num] = time.time()
     update_accounts(accounts)
     return 3 - len(accounts[username]["progress"])
+
+def mark_attempt(username):
+    """
+    mark that the user attempted the question, such that they cannot attempt 
+    too frequently
+    """
+    accounts = read_accounts()
+    last_attempt = accounts[username]["time_last_attempt"]
+    current_time = time.time()
+
+    print("Last_attempt: %s" % last_attempt)
+
+    time_left_to_wait = 30 - (current_time - last_attempt)
+
+    if time_left_to_wait >= 1:
+        return int(time_left_to_wait) 
+    else:
+        accounts[username]["time_last_attempt"] = current_time
+        update_accounts(accounts)
+        return 0
 
 
 
@@ -84,6 +107,30 @@ def get_problem_answer(problem_num):
     problem_answers = json.load(f)
     f.close()
     return problem_answers[problem_num]
+
+def init_winners():
+    winners = []
+    f = open('winners','w')
+    json.dump(winners,f)
+    f.close()
+
+
+
+def get_winners():
+    f = open('winners','r')
+    winners = json.load(f)
+    f.close()
+    return winners
+
+def add_winner(username,completion_time):
+    winners = get_winners()
+    winners.append((username,completion_time))
+    f = open('winners','w')
+    json.dump(winners,f)
+    f.close()
+    return len(winners)
+
+    
 
 
 

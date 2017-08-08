@@ -8,6 +8,21 @@ h2 {
   text-shadow: 0px 0px 20px #ff0000;
 }
 
+div.h2c {
+  font-family: 'Source Code Pro', sans-serif;
+  display: block;
+  font-size: 26px;
+  text-shadow: 0px 0px 20px #00ff00;
+  
+}
+
+div.h2i {
+  font-family: 'Source Code Pro', sans-serif;
+  display: block;
+  font-size: 26px;
+  text-shadow: 0px 0px 20px #ff0000;
+}
+
 h3 {
   font-family: 'Source Code Pro', sans-serif;
   font-size: 16px;
@@ -35,7 +50,15 @@ body {
   font-family: 'Source Code Pro', sans-serif;
   display: block;
   font-size: 22px;
+  /*text-shadow: 0px 0px 20px #ff0000;*/
+}
+
+div.uncompleted_problems_list {
   text-shadow: 0px 0px 20px #ff0000;
+}
+
+div.completed_problems_list {
+  text-shadow: 0px 0px 20px #00ff00;
 }
 
 div.problems_list ul{

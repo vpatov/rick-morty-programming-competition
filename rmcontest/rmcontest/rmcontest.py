@@ -75,7 +75,15 @@ nav.Bar('top', [
 @app.route('/problems')
 @requires_auth
 def problems_page():
-    return render_template('problems.html',problems=[1,2,3])
+    username = request.authorization['username']
+    completed_problems = list(db.get_progress(username).keys())
+    completed_problems.sort()
+    uncompleted_problems = [i for i in [1,2,3] if str(i) not in completed_problems]
+    return render_template(
+        'problems.html',
+        uncompleted_problems=uncompleted_problems,
+        completed_problems=completed_problems
+        )
 
 
 @app.route('/')
@@ -90,7 +98,7 @@ def utilities_page():
 
 
 
-def process_completion(username):
+def winner(username):
     current_time = time.time()
     
 
@@ -106,8 +114,17 @@ def process_answer():
     problem_num = request.form['problem_num']
     answer = request.form["answer"].strip()
     username = request.authorization['username']
+
+    progress = db.get_progress(username)
+    if problem_num in progress:
+        return render_template("already_answered.html")
     if answer == '':
         answer = '"No answer, just an empty void... a desolate nether."'
+
+    time_left_to_wait = db.mark_attempt(username)
+    print("Time Left to wait: %s" % time_left_to_wait)
+    if time_left_to_wait:
+        return render_template("too_soon.html",seconds=time_left_to_wait)
 
     correct_answer = str(db.get_problem_answer(problem_num))
     answer_correct = correct_answer == answer
@@ -116,8 +133,15 @@ def process_answer():
     if answer_correct:
         problems_left = db.mark_as_completed(username,problem_num)
 
-    if problems_left == 0:
-        process_completion(username)
+        if problems_left == 0:
+            place = add_winner(username,time.time())
+
+
+
+
+    
+
+
 
 
 

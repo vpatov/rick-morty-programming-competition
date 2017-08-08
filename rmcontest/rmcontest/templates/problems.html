@@ -1,15 +1,37 @@
 {% extends "index.html" %}
 
 {% block body %}
-    {% for problem in problems %}
+	<div class=h2i><center><u>Incomplete Problems</u></center></div>
+	<div class=problems_list>
+		<div class=uncompleted_problems_list>
+			<ul>
+		    	{% for problem in uncompleted_problems %}
+		    	
+		    	
+		    	<li>
+		    	<a href="{{url_for('problem_page',problem_num=problem)}}"> {{"~!!~"*problem}}-- PROBLEM {{problem}} --{{"~!!~"*problem}}~</a> 
+		    	</li>
+		    	{% endfor %}
+	    	</ul>
+    	</div>
+	</div>
+
+<br><br><br>
+
+	<div class=h2c><center><u>Finished Problems</u></center></div>
     <div class=problems_list>
-    <ul>
-    <li>
-    <a href="{{url_for('problem_page',problem_num=problem)}}"> {{"~!#$%$#!~"*problem}}-- PROBLEM {{problem}} --{{"~!#$%$#!~"*problem}}~</a> 
-    </li>
-    </ul>
-    </div>
-    {% endfor %}
+    	<div class=completed_problems_list>
+			<ul>
+		    	{% for problem in completed_problems %}
+		    	
+		    	
+		    	<li>
+		    	<a href="{{url_for('problem_page',problem_num=problem)}}">  PROBLEM {{problem}}</a> 
+		    	</li>
+		    	{% endfor %}
+	    	</ul>
+    	</div>
+	</div>
     
     
 {% endblock %}
