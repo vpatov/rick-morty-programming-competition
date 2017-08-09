@@ -6,6 +6,7 @@ from flask_navigation import Navigation
 from functools import wraps
 import db
 import problems
+import time
 
 
 app = Flask(__name__) # create the application instance :)
@@ -70,6 +71,10 @@ nav.Bar('top', [
 ##########################################################################
 
 
+##########################################################################
+######################## PROBLEM LOGIC ###################################
+##########################################################################
+
 
 
 @app.route('/problems')
@@ -84,23 +89,6 @@ def problems_page():
         uncompleted_problems=uncompleted_problems,
         completed_problems=completed_problems
         )
-
-
-@app.route('/')
-def home_page(nav=nav):
-    return render_template('index.html')
-
-
-@app.route('/utilities')
-@requires_auth
-def utilities_page():
-    return render_template('utilities.html')
-
-
-
-def winner(username):
-    current_time = time.time()
-    
 
 
 @requires_auth
@@ -134,18 +122,43 @@ def process_answer():
         problems_left = db.mark_as_completed(username,problem_num)
 
         if problems_left == 0:
-            place = add_winner(username,time.time())
-
-
-
-
-    
-
-
-
+            place = db.add_winner(username,time.time())
+            if place == 1:
+                place = '1st'
+            elif place == 2:
+                place = '2nd'
+            elif place == 3:
+                place = '3rd'
+            else:
+                place = str(place) + "th"
+            return render_template("winner.html",place=place)
 
 
     return render_template("feedback_template.html",answer_correct=answer_correct,answer=answer,problems_left=problems_left)
+
+
+#------------------------------------------------------------------------#
+##########################################################################
+
+
+
+@app.route('/')
+def home_page(nav=nav):
+    return render_template('index.html')
+
+
+@app.route('/utilities')
+@requires_auth
+def utilities_page():
+    return render_template('utilities.html')
+
+
+
+def winner(username):
+    current_time = time.time()
+    
+
+
 
 
 
