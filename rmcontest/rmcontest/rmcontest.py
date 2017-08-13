@@ -7,11 +7,17 @@ from functools import wraps
 import db
 import problems
 import time
+import os
 
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , rmcontest.py
-
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, 'rmcontest.db'),
+    SECRET_KEY='pQ3mFfla9x62jeva',
+    USERNAME='admin',
+    PASSWORD='default'
+))
 
 
 
