@@ -161,7 +161,7 @@ input[type="submit"] {
   color: #adadad;
 }*/
 
-input[type="text"] {
+input {
     background: transparent;
     color: #adadad;
     border: 1px solid #666666;

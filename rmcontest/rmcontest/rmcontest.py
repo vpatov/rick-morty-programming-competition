@@ -1,16 +1,15 @@
 from flask import Flask, request, redirect, url_for, abort, \
-     render_template, Response
-	
+     render_template, Response, session
 from flask_navigation import Navigation
-
 from functools import wraps
-import db
-import problems
+import problems # local
 import time
 import os
+from hashlib import sha1
 
 
 app = Flask(__name__) # create the application instance :)
+import database_helper as dbh
 app.config.from_object(__name__) # load config from this file , rmcontest.py
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'rmcontest.db'),
@@ -37,17 +36,26 @@ def authenticate():
     'You have to login with proper credentials', 401,
     {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
-def requires_auth(f):
+# def requires_auth(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         auth = request.authorization
+
+#         if not auth:
+#             return authenticate()
+
+#         authorized, reason = db.check_auth(auth.username,auth.password)
+#         if not authorized:
+#             return authenticate()
+
+#         return f(*args, **kwargs)
+#     return decorated
+
+def requires_login(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        auth = request.authorization
-
-        if not auth:
-            return authenticate()
-
-        authorized, reason = db.check_auth(auth.username,auth.password)
-        if not authorized:
-            return authenticate()
+        if not session.get('logged_in'):
+            abort(401)
 
         return f(*args, **kwargs)
     return decorated
@@ -77,16 +85,65 @@ nav.Bar('top', [
 ##########################################################################
 
 
+
 ##########################################################################
-######################## PROBLEM LOGIC ###################################
+############################### LOGIN ####################################
 ##########################################################################
+
+@app.route('/login',methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        hashed_pass = sha1(password.encode("ascii")).hexdigest()
+        success = dbh.authenticate_user(username,hashed_pass)
+
+        if success:
+            session['logged_in'] = success
+            return render_template('index.html',logged_in=True)
+        else:
+            return render_template('index.html',logged_in=False,error=True)
+
+
+    else:
+        print("")
+    pass
+
+def logout():
+    pass
+
+#------------------------------------------------------------------------#
+##########################################################################
+
+
+##########################################################################
+############################### VIEWS ####################################
+##########################################################################
+
+
+
+
+@app.route('/')
+def home_page():
+    logged_in = True
+    if not session.get('logged_in'):
+        logged_in = False
+    return render_template('index.html',logged_in=logged_in)
+
+
+@app.route('/utilities')
+@requires_login
+def utilities_page():
+    return render_template('utilities.html')
+
 
 
 
 @app.route('/problems')
-@requires_auth
+@requires_login
 def problems_page():
-    username = request.authorization['username']
+    print(session['logged_in'])
+    return "abc"
     completed_problems = list(db.get_progress(username).keys())
     completed_problems.sort()
     uncompleted_problems = [i for i in [1,2,3] if str(i) not in completed_problems]
@@ -97,12 +154,36 @@ def problems_page():
         )
 
 
-@requires_auth
+@requires_login
 @app.route('/problem<problem_num>')
 def problem_page(problem_num,no_answer=False):
     return render_template("problem" + str(problem_num) + '.html',no_answer=no_answer)
 
-@requires_auth
+
+
+    
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------------------------#
+##########################################################################
+
+
+##########################################################################
+######################## PROBLEM LOGIC ###################################
+##########################################################################
+
+
+
+
+
+@requires_login
 @app.route('/answer', methods=['POST'])
 def process_answer():
     problem_num = request.form['problem_num']
@@ -143,41 +224,23 @@ def process_answer():
     return render_template("feedback_template.html",answer_correct=answer_correct,answer=answer,problems_left=problems_left)
 
 
+
+def winner(username):
+    current_time = time.time()
+
+
 #------------------------------------------------------------------------#
 ##########################################################################
 
 
-
-@app.route('/')
-def home_page(nav=nav):
-    return render_template('index.html')
-
-
-@app.route('/utilities')
-@requires_auth
-def utilities_page():
-    return render_template('utilities.html')
-
-
-
-def winner(username):
-    current_time = time.time()
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@app.cli.command('initdb')
+def init_db():
+    """Initializes the database."""
+    db = dbh.get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+    print('Initialized the database.')
 
 
 if __name__ == '__main__':

@@ -4,7 +4,8 @@ from flask import g
 from rmcontest import app
 
 
-
+### Database basics
+###################
 
 def connect_db():
     """Connects to the specific database."""
@@ -28,17 +29,35 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+
+@app.cli.command('initdb')
 def init_db():
+    """Initializes the database."""
     db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
-
-@app.cli.command('initdb')
-def initdb_command():
-    """Initializes the database."""
-    init_db()
     print('Initialized the database.')
+
+
+def authenticate_user(username,hashed_pass):
+    db = get_db()
+    cur = db.execute('select * from users WHERE username = ? AND password = ?',[username,hashed_pass])
+    users = cur.fetchall()
+    if len(users):
+        return users[0]['user_id']
+    else:
+        return False
+
+
+### Getting problem information
+###############################
+
+
+def get_completed_problems(user_id):
+    db = get_db()
+    cur = db.execute('select * from ')
+
 
 
 

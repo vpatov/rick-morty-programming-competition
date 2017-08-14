@@ -9,7 +9,7 @@ drop table if exists users;
 create table users (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL,
-  password TEXT NOT NULL,
+  hashed_password TEXT NOT NULL,
   time_last_attempt TIMESTAMP
 );
 
