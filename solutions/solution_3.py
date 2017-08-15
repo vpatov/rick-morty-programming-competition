@@ -1,12 +1,5 @@
-
-
-
-# print max_utility
-# print max_galaxies
-
-def get_solution(f):
+def get_solution(f=None):
     import math
-    # f = open('problem1_input.txt','r')
     galaxies = [line.strip().split(',') for line in f.readlines()]
     for galaxy in galaxies:
         galaxy[1] = int(galaxy[1])

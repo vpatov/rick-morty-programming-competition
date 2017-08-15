@@ -5,7 +5,7 @@ For a few moments after a universe dies, its "slot" in the space-time continuum 
 
 Zeep's universe had this property, and thus Zeep was able to free his universe from the shackles of being confined to Rick's car battery, and instead into a slot amongst the full universes. 
 
-Luckily, Rick has 329 replacement car batteries. However, he doesn't want the same thing to happen again. How many of his batteries do NOT have the zlanp property in their cosmic signatures?
+Luckily, Rick has 50 replacement car batteries. However, he doesn't want the same thing to happen again. How many of his batteries do NOT have the zlanp property in their cosmic signatures?
 
 The cosmic signature read-outs show the distribution of zloonp zones. The read-outs are represented by a two-dimensional grid of dashes ("-") signifying no energy, and hashtags ("#") for zloonp zones. A cosmic signature has the zlanp property only if there are four or more contiguous zloonp zones of at least size 5. A zone is contiguous with those directly above, below, to the left, and to the right of it (no diagonals).
 

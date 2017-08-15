@@ -1,15 +1,16 @@
 from flask import Flask, request, redirect, url_for, abort, \
-     render_template, Response, session
+     render_template, Response, session, g
 from flask_navigation import Navigation
 from functools import wraps
-import problems # local
-import time
-import os
 from hashlib import sha1
 
+import sqlite3
+import time
+import os
+import sys
 
 app = Flask(__name__) # create the application instance :)
-import database_helper as dbh
+
 app.config.from_object(__name__) # load config from this file , rmcontest.py
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'rmcontest.db'),
@@ -21,7 +22,6 @@ app.config.update(dict(
 
 
 contest_started = False
-
 
 	
 
@@ -36,20 +36,6 @@ def authenticate():
     'You have to login with proper credentials', 401,
     {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
-# def requires_auth(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         auth = request.authorization
-
-#         if not auth:
-#             return authenticate()
-
-#         authorized, reason = db.check_auth(auth.username,auth.password)
-#         if not authorized:
-#             return authenticate()
-
-#         return f(*args, **kwargs)
-#     return decorated
 
 def requires_login(f):
     @wraps(f)
@@ -96,21 +82,26 @@ def login():
         username = request.form['username']
         password = request.form['password']
         hashed_pass = sha1(password.encode("ascii")).hexdigest()
-        success = dbh.authenticate_user(username,hashed_pass)
+        success = authenticate_user(username,hashed_pass)
 
         if success:
             session['logged_in'] = success
-            return render_template('index.html',logged_in=True)
+            return render_template('home.html',logged_in=True,name=username)
         else:
-            return render_template('index.html',logged_in=False,error=True)
+            return render_template('home.html',logged_in=False,error=True)
 
 
     else:
         print("")
     pass
 
+@app.route('/logout',methods=['GET','POST'])
 def logout():
-    pass
+
+    if request.method == 'POST':
+        if 'logged_in' in session:
+            del session['logged_in']
+    return render_template('home.html',logged_in=False)
 
 #------------------------------------------------------------------------#
 ##########################################################################
@@ -123,12 +114,12 @@ def logout():
 
 
 
-@app.route('/')
+@app.route('/home')
 def home_page():
     logged_in = True
     if not session.get('logged_in'):
         logged_in = False
-    return render_template('index.html',logged_in=logged_in)
+    return render_template('home.html',logged_in=logged_in)
 
 
 @app.route('/utilities')
@@ -138,26 +129,45 @@ def utilities_page():
 
 
 
+## Problems
+# 1) Galaxies
+# 2) Shleeble number
+# 3) zlnop propety search
+# 4) sum of numbers 
+# 5) traverse tree
+
+## Ordered by difficulty -
+# 4, 1, 5, 2, 3
+# A, B, C, D, E
+
+## Map problem letters to characters
+
+
 
 @app.route('/problems')
 @requires_login
 def problems_page():
-    print(session['logged_in'])
-    return "abc"
-    completed_problems = list(db.get_progress(username).keys())
-    completed_problems.sort()
-    uncompleted_problems = [i for i in [1,2,3] if str(i) not in completed_problems]
+    user_id = session['logged_in']
+    completed_problems = get_completed_problems(user_id)
+    incomplete_problems = get_incomplete_problems(user_id)
+
+    print("completed problems:",completed_problems)
+    print("incomplete problems: ", incomplete_problems)
     return render_template(
         'problems.html',
-        uncompleted_problems=uncompleted_problems,
-        completed_problems=completed_problems
+        completed_problems=completed_problems,
+        incomplete_problems=incomplete_problems
         )
 
 
 @requires_login
 @app.route('/problem<problem_num>')
 def problem_page(problem_num,no_answer=False):
-    return render_template("problem" + str(problem_num) + '.html',no_answer=no_answer)
+    return render_template(
+        "problem" + str(problem_num) + '.html',
+        no_answer=no_answer,
+        input_file='/static/problems/input_' + str(problem_num) + '.txt'
+    )
 
 
 
@@ -188,37 +198,48 @@ def problem_page(problem_num,no_answer=False):
 def process_answer():
     problem_num = request.form['problem_num']
     answer = request.form["answer"].strip()
-    username = request.authorization['username']
+    user_id = session['logged_in']
 
-    progress = db.get_progress(username)
-    if problem_num in progress:
+    ## see if the user has answered this problem already,
+    ## and let them know if they have
+    completed_problems = get_completed_problems(user_id)
+    if problem_num in completed_problems:
         return render_template("already_answered.html")
+
+    ## if answer is empty string, give caustic feedback
     if answer == '':
         answer = '"No answer, just an empty void... a desolate nether."'
 
-    time_left_to_wait = db.mark_attempt(username)
+    
+
+    ## prevent users from making attepts to frequently
+    time_left_to_wait = get_time_left_to_wait(user_id)
     print("Time Left to wait: %s" % time_left_to_wait)
-    if time_left_to_wait:
+    if time_left_to_wait > 0:
         return render_template("too_soon.html",seconds=time_left_to_wait)
 
-    correct_answer = str(db.get_problem_answer(problem_num))
-    answer_correct = correct_answer == answer
+
+    ## check to see if the answer is correct
+    answer_correct = check_answer(problem_num,answer)
+
 
     problems_left = None
     if answer_correct:
-        problems_left = db.mark_as_completed(username,problem_num)
+        mark_as_completed(problem_num,user_id)
+        problems_left = len(get_incomplete_problems(user_id))
 
-        if problems_left == 0:
-            place = db.add_winner(username,time.time())
-            if place == 1:
-                place = '1st'
-            elif place == 2:
-                place = '2nd'
-            elif place == 3:
-                place = '3rd'
-            else:
-                place = str(place) + "th"
-            return render_template("winner.html",place=place)
+        # if problems_left == 0:
+        #     place = db.add_winner(username,time.time())
+        #     if place == 1:
+        #         place = '1st'
+        #     elif place == 2:
+        #         place = '2nd'
+        #     elif place == 3:
+        #         place = '3rd'
+        #     else:
+        #         place = str(place) + "th"
+        #     return render_template("winner.html",place=place)
+
 
 
     return render_template("feedback_template.html",answer_correct=answer_correct,answer=answer,problems_left=problems_left)
@@ -233,14 +254,133 @@ def winner(username):
 ##########################################################################
 
 
+### I dont have time to deal with this module shit. I cant get the db in a sepearate file
+### and have it know where this app is for some reason. 
+
+
+
+
+
+
+
+def connect_db():
+    """Connects to the specific database."""
+    rv = sqlite3.connect(app.config['DATABASE'])
+    rv.row_factory = sqlite3.Row
+    return rv
+
+
+def get_db():
+    """Opens a new database connection if there is none yet for the
+    current application context.
+    """
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connect_db()
+    return g.sqlite_db
+
+
+@app.teardown_appcontext
+def close_db(error):
+    """Closes the database again at the end of the request."""
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
+
 @app.cli.command('initdb')
 def init_db():
     """Initializes the database."""
-    db = dbh.get_db()
+    db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
     print('Initialized the database.')
+
+
+def authenticate_user(username,hashed_pass):
+    db = get_db()
+    cur = db.execute('select * from users WHERE username = ? AND hashed_password = ?;',[username,hashed_pass])
+    users = cur.fetchall()
+    test_users = db.execute('select * from users;').fetchall()
+    # print("test_users:",test_users)
+    # for test_user in test_users:
+    #     print(test_user['username'],test_user['hashed_password'])
+    # print("users:%s" % str(users))
+    if len(users):
+        return users[0]['user_id']
+    else:
+        return False
+
+
+### Getting problem information
+###############################
+
+
+def get_completed_problems(user_id):
+    db = get_db()
+    cur = db.execute('select * from progress where user_id = ?;', [user_id])
+    problems = [row['problem_num'] for row in cur.fetchall()]
+    print("completed problems:", problems)
+
+    return problems
+
+def get_incomplete_problems(user_id):
+    db = get_db()
+    cur = db.execute('select * from problems')
+    all_problems = [row['problem_num'] for row in cur.fetchall()]
+    completed_problems = get_completed_problems(user_id)
+    incomplete_problems = [prob for prob in all_problems if prob not in completed_problems]
+    # incomplete_problems.sort()
+    return incomplete_problems
+
+def get_problem_answer(problem_num):
+    db = get_db()
+    cur = db.execute('select * from problems where problem_num = ?',[problem_num])
+    problem_answer = cur.fetchall()[0]['problem_answer']
+    return str(problem_answer)
+
+def check_answer(problem_num,answer):
+    correct_answer = get_problem_answer(problem_num)
+    return str(answer) == str(correct_answer)
+
+
+
+
+
+### Answering questions
+#######################
+
+def get_time_left_to_wait(user_id):
+    db = get_db()
+    cur = db.execute('select time_last_attempt from users where user_id = ?',[user_id])
+    time_last_attempt = cur.fetchall()[0]['time_last_attempt']
+    print(time_last_attempt)
+    current_time = time.time()
+    diff = int(current_time - time_last_attempt)
+    if diff < 30:
+        return 30 - diff
+    else:
+        cur = db.execute('update users set time_last_attempt = ? where user_id = ?;',[current_time,user_id])
+        db.commit()
+        return 0
+        ### change value of time_last_attempt to current_time
+
+def mark_as_completed(problem_num,user_id):
+    time_finished = time.time()
+    db = get_db()
+    cur = db.execute(
+        'insert into progress (problem_num,user_id,time_finished) values (?,?,?)',
+        [problem_num,user_id,time_finished]
+    )
+    cur = db.execute('select points from users where user_id = ?', [user_id])
+    user_points = cur.fetchall()[0]['points']
+
+    cur = db.execute('select problem_points from problems where problem_num = ?',[problem_num])
+    problem_points = cur.fetchall()[0]['problem_points']
+
+    cur = db.execute('update users set points = ? where user_id = ?',[user_points + problem_points, user_id])
+
+    db.commit()
+
+
 
 
 if __name__ == '__main__':

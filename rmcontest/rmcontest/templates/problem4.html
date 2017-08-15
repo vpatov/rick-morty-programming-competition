@@ -1,0 +1,16 @@
+{% extends "problem.html" %}
+{% block description %}
+<div class=description>
+Summer is fuming, because Rick thought it would be funny/cool to take her cellphone and turn it into a flying autonomous silly string dispenser. Summer is just about to explode, so Rick calms her by telling her that the contraption can be turned back into her cellphone if she punches in a special code on a keypad on its front. The contraption flies around the living room and shoots silly string to form a pattern on the wall. Upon inspection, it seems that it has painted a... tree (not the kind you find outside). Rick tells her that to find the code, you must first find the path from the root of the tree to the leaf "LOL". If you then form a string by joining the name of each node from the root to the end (inclusive), the code is formed by taking every 4th letter. For example, if the tree were:
+
+<image>
+
+and the target node was "JKL", then the path string would be "ABCGHITUVJKL", then the code would be "AHV".
+
+Given the tree in <filename>, and that the target node is "LOL", what is the code?
+</div>
+{% endblock %}
+
+{% block answer_form %}
+{{ super() }}
+{% endblock %}

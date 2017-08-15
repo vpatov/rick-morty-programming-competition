@@ -1,10 +1,5 @@
-
-
-
-
-def get_solution(f):
+def get_solution(f=None):
 	grids = []
-	# f = open('problem3_input.txt','r')
 	while(True):
 		grid = []
 		line = f.readline()
@@ -56,9 +51,14 @@ def get_solution(f):
 		return (sorted(sizes)[::-1])
 
 
+	if __name__ == '__main__':
+		print(len(grids))
 	count = 0
 	for grid in grids:
 		sizes = count_splin_zones(grid)
 		if sizes[3] >= 5:
 			count += 1
-	return 329 - count
+	return len(grids) - count
+
+if __name__ == '__main__':
+	print(get_solution(open('input_7.txt','r')))

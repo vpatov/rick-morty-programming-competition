@@ -1,89 +1,64 @@
-{% extends "index.html" %}
-{% block body %}
-<div class=description>
-<p>
-"Peace among worlds &lt;<b>buurrrrppp</b>&gt;", says Rick, fingers in the air, as he stumbles through the town square of the capital of the main world of his car battery's microverse (damn thing won't start again). He is greeted boorishly by Zeep, whom filled with ire, has waited patiently for the day Rick would dare step foot in his home again. "You no longer have power here, asshole!", Zeep shouts. He reaches into his pocket and presses a big red button on a remote, activating a strange dark monolith erected in the center of the square. The world starts to shake violently, tremors becoming more turbulent with each passing moment. Right when it seems all is about to collapse - all becomes still, and all becomes silent. Rick is unphased the whole time, until this very moment - something is different. In a frantic, time slows to a crawl. He reaches for his portal gun as fast as his alcoholic limbs will allow him, but he knows he won't be fast enough, for Zeep and his brethren have already fired all of their guns right at him. He has no choice but to fire the portal gun at himself, from inside of his pocket, knowing that there's a 96% chance that it will kill him. He pulls the trigger just in time, gets hurled through dimensions of time and space, and lands softly on a large butt. He should have seen this coming.
-</p>
-<p>
-For a few moments after a universe dies, its "slot" in the space-time continuum is vacant. Since there are an infinite number of universes, there are also an infinite number dying at any given moment. Zeep's device took advantage of this, and transferred his universe from its previous slot (inside Rick's battery), to that of some previously existing (but independent) universe. Only a universe with a zlanp property in its cosmic signature can be switched out from one slot to another.
-</p>
+{% extends "problem.html" %}
 
-<p>
- Zeep's universe had this property, and thus Zeep was able to free his universe from the shackles of being confined to Rick's car battery, and instead into a slot amongst the full universes. 
-</p>
-
-<p>
-Luckily, Rick has 329 replacement car batteries. However, he doesn't want the same thing to happen again. How many of his batteries do NOT have the zlanp property in their cosmic signatures?
-</p>
-
-<p>
-The cosmic signature read-outs show the distribution of zloonp zones. The read-outs are represented by a two-dimensional grid of dashes ("-") signifying no energy, and hashtags ("#") for zloonp zones. A cosmic signature has the zlanp property only if there are four or more contiguous zloonp zones of at least size 5. A zone is contiguous with those directly above, below, to the left, and to the right of it (no diagonals).
-</p>
-<blockquote><pre><code><div class=code>
-  --#----#---
-  ###------#-
-  ######-----
-  -##-####---
-  ######---##
-  ###-----###
-  ##------###
-  #-----#----
-  #---####---
-  -----##----
+{% block description %}
+  <p>
+  <div class=description>
+  <p>
+  Rick and Morty are enjoying one of their occasional inter-galactic cruises, and are figuring out where to go next. They have a long list of galaxies that they are interested in visiting, as well as their coordinates (fortunately all the galaxies they are interested in lie on the same 2-dimensional plane). However, they only have a limited amount of fuel and time, so they decide to only visit <b>two</b> for now. 
+  </p>
+  <p>
+  Not all galaxies are made equal - some just straight up suck and have nothing to offer. So to their list they also add their estimated perceived benefit of visiting. Morty suggests to describe their utility, <b>u</b>, gained from visiting a galaxy X as:
+  </p>
+ <blockquote><pre><code><div class=code>
+	utility(X) = benefit(X) - distance(X)
   </div></code></pre></blockquote>
-  - has five zloonp zones, only three of them of at least size 5. Does NOT have zlanp property.
+  <p>
+	Rick laughs and says, "&lt;BLECHHH&gt; <b>Morty</b> that's gotta be the <b>dumbest</b> idea you've ever had... <i>Why do you even try</i>? Here.. haha... <b>Here's</b> how we'll figure this out", and pulls out this bad boy:
+  </p>
+  	<blockquote><pre><code><div class=code>
+	utility(X) = benefit(X)**2 - ((distance(X) + 36) // 3)
+	# // means integer division
+	</div></code></pre></blockquote>
+<p>Each galaxy is described as a tuple: (name, coordinates, benefit). </p>
+<p>
+The adventurers start at coordinates <code>(0,0)</code>. The total utility is found by summing the two utilities for the two galaxies. For example, if the two galaxies they visited were <code>(Alpha, (30,40), 200)</code> and (Bayta, (-10,40), 300), their total utility would be calculated as follows:
+</p>
+	<blockquote><pre><code><div class=code>
+	<u>Alpha</u>
+	Distance between (0,0) and (30,40) -> 50 (euclidean distance)
+	Benefit -> 200
+	Utility -> 200**2 - ((50 + 36) // 3) -> 40000 - 28 -> 39972
 
+	<u>Bayta</u>
+	Distance between (30,40) and (-10,40) -> 40
+	Benefit -> 300
+	Utility -> 300**2 - ((40 + 36) // 3) -> 90000 - 25 -> 89975
 
-<blockquote><pre><code><div class=code>
-  #--------------
-  ---###------##-
-  ---###---------
-  ---------------
-  -----#######---
-  ---------------
-  ---#--------##-
-  --###--------##
-  --##---------##
-  -------------#-
-  </div></code></pre></blockquote>
+	<u>Total Utility</u> -> 39972 + 89975 -> 129947
+	</div></code></pre></blockquote>
 
-  - has six zloonp zones, with four of them of at least size 5. Does have zlanp property.
-
-<blockquote><pre><code><div class=code>
-  ---------------------------#
-  ----------------------------
-  ---------------#------------
-  ----------------------------
-  ----------------#-----------
-  ---------#------------------
-  -----#----------------------
-  -----##---------------#-----
-  ----------------------------
-  ----------------------------
-
-</div></code></pre></blockquote>
-  - has 6 zloonp zones, all of them smaller than size 5. Does NOT have zlanp property.
-
-<br>
-<br>
+Here is their list of galaxies:
+<a href="{{input_file}}">Galaxies</a>
+<br><br>
 <hr class="style12">
 <br>
+What is the maximum utility that they can possibly attain according to Rick's formula? 
 
-<p>
-Here is a list of the cosmic readout signatures for the miniverses in Rick's 329 car batteries: <a href="/static/problems/problem3_input.txt">Cosmic Signatures</a>. Each signature is prepended by its width and height.
-</p>
-
-How many of his batteries do NOT have the zlanp property in their cosmic signatures (i.e. how many can he safely use)?
-
-
-<form action="{{ url_for('process_answer') }}" method='post'>
-  <br>
-  <input type="hidden" name="problem_num" value="3">
-  Answer: <input type="text" name="answer"> <input type="submit" value="Submit">
-  
-</form> 
 
 <br>
 
 </div>
+
+{% endblock %}
+
+{% block answer_form %}
+{{ super () }}
+{% endblock %}
+
+{% block hint %}
+<br>
+<div style="color:#102080">P.S. Don't forget that they visit two galaxies.</div>
+<br>
+<br>
+<br>
 {% endblock %}

@@ -1,8 +1,8 @@
 drop table if exists problems;
 create table problems (
-    problem_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    problem_text TEXT NOT NULL,
-    problem_answer INTEGER NOT NULL  
+    problem_num INTEGER PRIMARY KEY,
+    problem_answer TEXT NOT NULL,
+    problem_points INTEGER  
 );
 
 drop table if exists users;
@@ -10,18 +10,26 @@ create table users (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL,
   hashed_password TEXT NOT NULL,
-  time_last_attempt TIMESTAMP
+  time_last_attempt REAL,
+  points INTEGER NOT NULL
 );
 
 drop table if exists progress;
 create table progress (
-    problem_id INTEGER,
+    problem_num INTEGER,
     user_id INTEGER,
-    time_finished TIMESTAMP,
-    FOREIGN KEY(problem_id) REFERENCES problems(problem_id),
-    FOREIGN KEY(user_id) REFERENCES users(user_id),
-    CONSTRAINT progress_key PRIMARY KEY (problem_id, user_id)
+    time_finished REAL,
+    FOREIGN KEY(problem_num) REFERENCES problems(problem_num),
+    FOREIGN KEY(user_id) REFERENCES users(user_id)
 
+);
+
+drop table if exists winners;
+create table winners (
+    winner_place INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_finished REAL,
+    user_id INTEGER,
+    username TEXT NOT NULL
 );
 
 -- progress_id INTEGER PRIMARY KEY AUTOINCREMENT,

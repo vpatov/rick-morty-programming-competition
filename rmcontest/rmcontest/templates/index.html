@@ -26,33 +26,16 @@
 
 <p>
 {% block body %}
-<div class=page>
 
-{% if not logged_in %}
-
-{% if error %}
-
-<div style="color:red">Invalid username/password combination. If you believe this is a mistake, contact Vasia immediately.</div>
-{% endif %}
-
-<form action="{{url_for('login')}}" method=post>
-	<dl>
-		Username:<dd><input type=text name=username></dd>
-		Password:<dd><input type=password name=password></dd>
-		<dd><input type=submit value=login>
-	</dl>
-</form>
-
-
-{% else %}
-Welcome to the contest! 
-
-
-{% endif %}
-</div>
 {% endblock %}
 
 {% block description %}
 <br>
+{% endblock %}
+
+{% block answer_form %}
+{% endblock %}
+
+{% block hint %}
 {% endblock %}
 
