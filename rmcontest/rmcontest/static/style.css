@@ -38,6 +38,38 @@ body {
   color: white;
 }
 
+hlp {
+  background: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  text-shadow: inherit;
+  color: #a5a5f0;
+}
+
+hlb {
+  background: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  text-shadow: inherit;
+  color: #4090c3;
+}
+
+hlg {
+    background: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    text-shadow: inherit;
+    color: #55c390;
+}
+
+hlr {
+    background: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    text-shadow: inherit;
+    color: #e44040;
+}
+
 
 .navbar {
   font-family: 'Source Code Pro', sans-serif;

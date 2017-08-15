@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block body %}
+<div class=page>
+
+
+
+<form action="{{url_for('logout')}}" method=post>
+  <dl>
+<dd><input type=submit value=logout>
+  </dl>
+</form>
+Welcome to the contest, {{name}}!
+
+</div>
+{% endblock %}

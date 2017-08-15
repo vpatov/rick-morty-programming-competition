@@ -12,7 +12,7 @@
 {% block answer_form %}
 <form action="{{ url_for('process_answer') }}" method='post'>
   <br>
-  <input type="hidden" name="problem_num" value={{problem_num}}>
+  <input type="hidden" name="problem_num" value = "{{problem_num}}">
   Answer: <input type="text" name="answer"> <input type="submit" value="Submit">
   
 </form> 

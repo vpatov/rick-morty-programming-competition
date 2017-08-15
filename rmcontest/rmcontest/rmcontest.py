@@ -86,7 +86,7 @@ def login():
 
         if success:
             session['logged_in'] = success
-            return render_template('home.html',logged_in=True,name=username)
+            return render_template('login.html',logged_in=True)
         else:
             return render_template('home.html',logged_in=False,error=True)
 
@@ -95,6 +95,7 @@ def login():
         print("")
     pass
 
+@requires_login
 @app.route('/logout',methods=['GET','POST'])
 def logout():
 
@@ -113,7 +114,7 @@ def logout():
 
 
 
-
+@app.route('/')
 @app.route('/home')
 def home_page():
     logged_in = True
@@ -160,13 +161,15 @@ def problems_page():
         )
 
 
-@requires_login
+
 @app.route('/problem<problem_num>')
+@requires_login
 def problem_page(problem_num,no_answer=False):
     return render_template(
         "problem" + str(problem_num) + '.html',
         no_answer=no_answer,
-        input_file='/static/problems/input_' + str(problem_num) + '.txt'
+        input_file='/static/problems/input_' + str(problem_num) + '.txt',
+        problem_num=problem_num
     )
 
 
@@ -199,6 +202,8 @@ def process_answer():
     problem_num = request.form['problem_num']
     answer = request.form["answer"].strip()
     user_id = session['logged_in']
+
+    print("form: prob_num: %s answer: %s user_id: %s" % (problem_num,answer,user_id))
 
     ## see if the user has answered this problem already,
     ## and let them know if they have
@@ -245,9 +250,6 @@ def process_answer():
     return render_template("feedback_template.html",answer_correct=answer_correct,answer=answer,problems_left=problems_left)
 
 
-
-def winner(username):
-    current_time = time.time()
 
 
 #------------------------------------------------------------------------#
@@ -380,7 +382,12 @@ def mark_as_completed(problem_num,user_id):
 
     db.commit()
 
+#####
 
+def get_name(user_id):
+    db = get_db()
+    cur = db.execute('select username from users where user_id = ?',[user_id])
+    return cur.fetchall()[0]['username']
 
 
 if __name__ == '__main__':

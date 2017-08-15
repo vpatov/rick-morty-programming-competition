@@ -4,16 +4,10 @@
   <p>
   <div class=description>
   <p>
-  Rick and Morty are enjoying one of their occasional inter-galactic cruises, and are figuring out where to go next. They have a long list of galaxies that they are interested in visiting, as well as their coordinates (fortunately all the galaxies they are interested in lie on the same 2-dimensional plane). However, they only have a limited amount of fuel and time, so they decide to only visit <b>two</b> for now. 
+  Rick and Morty are enjoying one of their occasional inter-galactic cruises, and are figuring out where to go next. They have a long list of galaxies that they are interested in visiting, as well as their coordinates (fortunately all the galaxies they are interested in lie on the same <hlb>2-dimensional</hlb> plane). However, they only have a limited amount of fuel and time, so they decide to only visit <b>two</b> for now. 
   </p>
   <p>
-  Not all galaxies are made equal - some just straight up suck and have nothing to offer. So to their list they also add their estimated perceived benefit of visiting. Morty suggests to describe their utility, <b>u</b>, gained from visiting a galaxy X as:
-  </p>
- <blockquote><pre><code><div class=code>
-	utility(X) = benefit(X) - distance(X)
-  </div></code></pre></blockquote>
-  <p>
-	Rick laughs and says, "&lt;BLECHHH&gt; <b>Morty</b> that's gotta be the <b>dumbest</b> idea you've ever had... <i>Why do you even try</i>? Here.. haha... <b>Here's</b> how we'll figure this out", and pulls out this bad boy:
+  Not all galaxies are made equal - some just straight up <hlr>suck</hlr> and have nothing to offer. So to their list they also add their estimated perceived benefit of visiting. Morty is about to suggest a simple way to calculate utility when Rick pulls out this bad boy:
   </p>
   	<blockquote><pre><code><div class=code>
 	utility(X) = benefit(X)**2 - ((distance(X) + 36) // 3)
@@ -21,7 +15,7 @@
 	</div></code></pre></blockquote>
 <p>Each galaxy is described as a tuple: (name, coordinates, benefit). </p>
 <p>
-The adventurers start at coordinates <code>(0,0)</code>. The total utility is found by summing the two utilities for the two galaxies. For example, if the two galaxies they visited were <code>(Alpha, (30,40), 200)</code> and (Bayta, (-10,40), 300), their total utility would be calculated as follows:
+The adventurers start at coordinates <hlp><code>(0,0)</code></hlp>. The total utility is found by summing the two utilities for the two galaxies. For example, if the two galaxies they visited were <hlp><code>(Alpha, (30,40), 200)</code></hlp> and <hlp>(Bayta, (-10,40), 300)</hlp>, their total utility would be calculated as follows:
 </p>
 	<blockquote><pre><code><div class=code>
 	<u>Alpha</u>
@@ -42,7 +36,7 @@ Here is their list of galaxies:
 <br><br>
 <hr class="style12">
 <br>
-What is the maximum utility that they can possibly attain according to Rick's formula? 
+What is the <hlb>maximum utility</hlb> that they can possibly attain according to Rick's formula? 
 
 
 <br>
