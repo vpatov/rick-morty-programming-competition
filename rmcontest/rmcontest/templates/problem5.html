@@ -1,12 +1,12 @@
-{% extends "index.html" %}
+{% extends "problem.html" %}
 
 {% block description %}
 <div class=description>
 <p>
-Rick is trying to calibrate his portal gun to get him and Morty to Alpha-Betrium, so that he can collect some money that Magma-Q owes him from an old bet (41 shmeckles is no petty change, thats $6068 USD!). His dial isn't working properly, so he has to configure the destination manually. To do this, he needs to generate the 5823th shleeble number. He knows the first few shleeble numbers (counting from 1) are 0, 1, and 6. He can't remember the rest..
+Rick is trying to calibrate his portal gun to get him and Morty to Alpha-Betrium, so that he can collect some money that <hlr>Magma-Q</hlr> owes him from an old bet (41 shmeckles is no petty change, thats <b>$6068</b> USD!). His dial isn't working properly, so he has to configure the destination manually. To do this, he needs to generate the <hlb>5823th</hlb> shleeble number. He knows the first few shleeble numbers (counting from 1) are <hlp>0</hlp>, <hlp>1</hlp>, and <hlp>6</hlp>. He can't remember the rest..
 </p>
 
-The formula for the nth shleeble number shleeble(n) = 
+The formula for the nth shleeble number is:
 
 <blockquote><pre><code><div class=code>
 	Shleeble(n) = (Shleeble(n-1) - Shleeble(n+1)) / (T(n) * 11)
@@ -19,19 +19,10 @@ where T(n) is the nth triangle number (1,3,6,10,15,21...).
 <br>
 <hr class="style12">
 <br>
-What is the 5823th shleeble number (mod 1000000)?
-
-
-<form action="{{ url_for('process_answer') }}" method='post'>
-  <br>
-  <input type="hidden" name="problem_num" value="2">
-  Answer: <input type="text" name="answer"> <input type="submit" value="Submit">
-  
-</form> 
-
+What is the <hlb>5823th</hlb> shleeble number (mod 1000000)?
 </div>
+{% endblock %}
 
-
-
-
+{% block answer_form %}
+{{ super() }}
 {% endblock %}

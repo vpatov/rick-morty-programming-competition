@@ -10,28 +10,6 @@ create table problems (
     problem_points INTEGER  
 );
 
-Problems
-1) Galaxies 1
-2) Shleeble number 2
-3) zlnop propety search 3
-4) sum of numbers 1
-5) traverse tree 2 
-6) tf-idf 3
-7) balanced brackets 1
-
-new order should be
-
-balanced brackets
-sum of numbers
-galaxies
-traverse tree
-shleeble number
-tf-idf
-zlnop
-
-Ordered by difficulty -
-4, 1, 5, 2, 3
-
 """
 
 def get_filename(filepath):
@@ -43,9 +21,9 @@ problem_points = {
 	2:1,
 	3:1,
 	4:2,
-	5:2,
-	6:3,
-	7:3
+	5:3,
+	6:4,
+	7:5
 }
 
 

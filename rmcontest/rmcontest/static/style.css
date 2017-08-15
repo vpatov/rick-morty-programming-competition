@@ -70,6 +70,14 @@ hlr {
     color: #e44040;
 }
 
+hlgr {
+    background: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    text-shadow: inherit;
+    color: #a090b0;
+}
+
 
 .navbar {
   font-family: 'Source Code Pro', sans-serif;
@@ -163,6 +171,11 @@ div.description a:link {
 
 div.description a:visited {
   color:#0c6654;
+}
+
+img {
+  display: block;
+  margin: auto;
 }
 
 .code {

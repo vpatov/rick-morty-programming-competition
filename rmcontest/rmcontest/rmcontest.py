@@ -215,17 +215,20 @@ def process_answer():
     if answer == '':
         answer = '"No answer, just an empty void... a desolate nether."'
 
-    
+    ## check to see if the answer is correct
+    answer_correct = check_answer(problem_num,answer)
 
-    ## prevent users from making attepts to frequently
-    time_left_to_wait = get_time_left_to_wait(user_id)
+
+
+    ## prevent users from making attepts too frequently
+    overwrite = False if answer_correct else True
+    time_left_to_wait = get_time_left_to_wait(user_id,overwrite)
     print("Time Left to wait: %s" % time_left_to_wait)
     if time_left_to_wait > 0:
         return render_template("too_soon.html",seconds=time_left_to_wait)
 
 
-    ## check to see if the answer is correct
-    answer_correct = check_answer(problem_num,answer)
+    
 
 
     problems_left = None
@@ -233,17 +236,17 @@ def process_answer():
         mark_as_completed(problem_num,user_id)
         problems_left = len(get_incomplete_problems(user_id))
 
-        # if problems_left == 0:
-        #     place = db.add_winner(username,time.time())
-        #     if place == 1:
-        #         place = '1st'
-        #     elif place == 2:
-        #         place = '2nd'
-        #     elif place == 3:
-        #         place = '3rd'
-        #     else:
-        #         place = str(place) + "th"
-        #     return render_template("winner.html",place=place)
+        if problems_left == 0:
+            place = db.add_winner(username,time.time())
+            if place == 1:
+                place = '1st'
+            elif place == 2:
+                place = '2nd'
+            elif place == 3:
+                place = '3rd'
+            else:
+                place = str(place) + "th"
+            return render_template("winner.html",place=place)
 
 
 
@@ -350,7 +353,7 @@ def check_answer(problem_num,answer):
 ### Answering questions
 #######################
 
-def get_time_left_to_wait(user_id):
+def get_time_left_to_wait(user_id,overwrite=True):
     db = get_db()
     cur = db.execute('select time_last_attempt from users where user_id = ?',[user_id])
     time_last_attempt = cur.fetchall()[0]['time_last_attempt']
@@ -360,8 +363,9 @@ def get_time_left_to_wait(user_id):
     if diff < 30:
         return 30 - diff
     else:
-        cur = db.execute('update users set time_last_attempt = ? where user_id = ?;',[current_time,user_id])
-        db.commit()
+        if overwrite:
+            cur = db.execute('update users set time_last_attempt = ? where user_id = ?;',[current_time,user_id])
+            db.commit()
         return 0
         ### change value of time_last_attempt to current_time
 

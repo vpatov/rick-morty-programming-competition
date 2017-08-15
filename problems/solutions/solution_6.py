@@ -17,7 +17,7 @@ def get_solution(f):
 				idfs[word] = 1
 
 	for word in idfs:
-		idfs[word] = log(tot_num_docs / idfs[word] ,10)
+		idfs[word] = log(tot_num_docs / idfs[word])
 
 	for document in documents:
 		words = Counter(document)
@@ -35,4 +35,4 @@ def get_solution(f):
 
 
 if __name__ == '__main__':
-	print(get_solution(open('input_6.txt','r')))
+	print(get_solution(open('../input/input_6.txt','r')))

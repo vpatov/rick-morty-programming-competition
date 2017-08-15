@@ -1,23 +1,47 @@
 {% extends "problem.html" %}
 {% block description %}
 <div class=description>
-Morty hasn't gotten a good night's rest in weeks. He's just returned from some crazy galactic adventure with Rick, and can barely stand. Rick constantly drags him from one edge of the universe to the other, and as a result Morty barely has the chance to pursue normal teenage activities, such as skateboarding, falling in love, or exploring abandoned houses with his equally oblivious peers. With eyebags that can't droop any lower, and an exasperation that can't be exacerated any further, Morty stumbles up to his room, and finds a bunch of papers on his desk - his forgotten homework assignment. He doesn't have the time to read it - instead he'll find the most important term and just wing the rest. 
+Morty hasn't gotten a good night's rest in weeks. He's just returned from some crazy galactic adventure with Rick, and can barely stand. Rick constantly drags him from one edge of the universe to the other, and as a result Morty barely has the chance to pursue normal teenage activities, such as skateboarding, <i><hlr>falling in love</hlr></i>, or exploring abandoned houses with his equally oblivious peers. 
 
-There are a total of 10 documents, each document separated by five dashes "-----". Find the term with the highest TF-IDF. TF-IDF (term frequency - inverse document frequency) is a measure of how significant a term is to a document, given a collection of documents. A simplified version of tf-idf can be calculated as such:
+<p>
 
-tf(term) = (# occurences of term in document / total # of terms in document )
-idf(term) = (# documents that include term / # documents)
+With <i><hlgr>eyebags</hlgr></i> that can't droop any lower, and an exasperation that can't be exacerated any further, Morty stumbles up to his room, and finds a bunch of papers on his desk - his forgotten homework assignment. He doesn't have the time to read it - instead he'll find the most important term and just wing the rest. 
 
-Note that the tf of a term is specific to the document - the same term can have different tf's for different documents. The idf is global per corpus (a corpus is a collection of documents). The tf-idf is the product of the tf and idf, and it is specific to a document. What is the term with the highest tf-idf? (Hint: treat each document as a list of words.)
+<p>
+
+In his <a href={{input_file}}>assigned reading</a> there are a total of <hlb>10</hlb> documents, each document separated by five dashes "-----". Find the term with the highest <b><hlb>TF-IDF</hlb></b> (term frequency - inverse document frequency). 
+
+<p>
+
+TF-IDF is a measure of how significant a term is to a document, given a collection of documents. A simplified version of it can be calculated as such:
+<p>
+
+<blockquote><pre><code><div class=code>
+	tf(term) = (# occurences of term in document / total # of terms in document )
+	idf(term) = log(# documents that include term / # documents)
+	### log is the natural log. Python's math module has this function.
+
+	tf-idf(term) = tf(term) * idf(term)
+ </div></code></pre></blockquote>
+
+<p>
+Note that the TF of a term is specific to the document - the same term can have different TFs for different documents. The IDF is global per corpus (a corpus is a collection of documents). The <b><hlb>TF-IDF</hlb></b> of a term in a document is the <hlp>product of the TF and IDF</hlp>, and it is specific to a document. 
+
+<p>
+What is the term with the highest <b><hlp>TF-IDF</hlp></b>? 
 </div>
 {% endblock %}
-
 {% block answer_form %}
 {{ super() }}
 {% endblock %}
 
 {% block hint %}
 
+<br>
+<div style="color:#102080">(Hint: treat each document as a list of words.)</div>
+<br>
+<br>
+<br>
 {% endblock %}
 
 
