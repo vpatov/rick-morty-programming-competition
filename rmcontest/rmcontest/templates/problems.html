@@ -26,12 +26,14 @@
 			<tr>
 				<th> # </th>
 				<th> Points </th>
+				<th> Elapsed Time </th>
 			</tr>
 			{% for problem in completed_problems %}
 			    	
 				<tr>
 					<th class="com"><a href="{{url_for('problem_page',problem_num=problem)}}"> {{num2word(problem)}} </a></th>
 					<th class="com">{{completed_problems[problem]}}</th>
+					<th class="com">{{time_finished[problem]}}</th>
 				</tr>
 
 			{% endfor %}
@@ -39,7 +41,7 @@
 
 		</table>
 
-		<h2><center>Total Points: {{total_points}} </center></h2>
+		<h2><center>Total Points: {{user_points}} </center></h2>
 
     {% endif %}
 

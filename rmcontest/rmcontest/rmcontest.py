@@ -157,7 +157,8 @@ def problems_page():
         completed_problems=completed_problems,
         incomplete_problems=incomplete_problems,
         num2word=num2word,
-        user_points=get_user_points(user_id)
+        user_points=get_user_points(user_id),
+        time_finished=get_time_finished(user_id)
         )
 
 
@@ -371,8 +372,21 @@ def get_completed_problems(user_id):
     db = get_db()
     cur = db.execute('select * from progress where user_id = ?;', [user_id])
     problems = {row['problem_num']:get_problem_points(row['problem_num']) for row in cur.fetchall()}
-
     return problems
+
+def seconds2minutes(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    return "%d:%02d:%02d" % (h, m, s)
+
+def get_time_finished(user_id):
+    db = get_db()
+    cur = db.execute('select * from progress where user_id = ?;', [user_id])
+    time_finished = {
+        row['problem_num']:seconds2minutes(row['time_finished'] - get_contest_start_time()) 
+        for row in cur.fetchall()
+        }
+    return time_finished
 
 def get_incomplete_problems(user_id):
     db = get_db()
