@@ -457,9 +457,12 @@ def mark_as_completed(problem_num,user_id):
 
 def num2word(num):
     words = {
-    1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven'
+    0:'zero',1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven'
     }
-    return words[num]
+    if num in words:
+        return words[num]
+    else:
+        return str(num)
 
 
 def get_problem_points(problem_num):

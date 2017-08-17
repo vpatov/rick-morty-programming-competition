@@ -17,7 +17,7 @@ def get_filename(filepath):
 
 
 problem_points = {
-	0:0,
+	0:1,
 	1:1,
 	2:1,
 	3:2,
