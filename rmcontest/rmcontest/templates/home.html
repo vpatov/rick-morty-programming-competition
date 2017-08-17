@@ -2,7 +2,7 @@
 {% block body %}
 <div class=page>
 
-{% if not logged_in %}
+{% if not session.get('logged_in') %}
 
 {% if error %}
 
