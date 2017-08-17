@@ -19,12 +19,8 @@
 
 
 {% else %}
-<form action="{{url_for('logout')}}" method=post>
-  <dl>
-<dd><input type=submit value=logout>
-  </dl>
-</form>
-The contest has begun?
+
+<h2>Welcome to the contest, <hlg>{{username}}</hlg>!</h2>
 
 
 {% endif %}

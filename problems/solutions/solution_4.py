@@ -1,4 +1,4 @@
-def get_solution(f = None):
+def get_solution(f=None):
 	import json
 	tree = json.load(f)
 

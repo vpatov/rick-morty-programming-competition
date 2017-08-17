@@ -18,7 +18,7 @@ TF-IDF is a measure of how significant a term is to a document, given a collecti
 
 <blockquote><pre><code><div class=code>
 	tf(term) = (# occurences of term in document / total # of terms in document )
-	idf(term) = log(# documents that include term / # documents)
+	idf(term) = log(total # documents / # documents that include term)
 	### log is the natural log. Python's math module has this function.
 
 	tf-idf(term) = tf(term) * idf(term)

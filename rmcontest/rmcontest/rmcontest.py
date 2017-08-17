@@ -4,6 +4,7 @@ from flask_navigation import Navigation
 from functools import wraps
 from hashlib import sha1
 
+import datetime
 import sqlite3
 import time
 import os
@@ -60,8 +61,10 @@ nav.init_app(app)
 
 nav.Bar('top', [
     nav.Item('Home', 'home_page'),
+    nav.Item('Rules', 'rules_page'),
     nav.Item('Problems','problems_page'),
-    nav.Item('Utilities', 'utilities_page')
+    nav.Item('Utilities', 'utilities_page'),
+    nav.Item('Time Left','timer_page')
 ])
 
 
@@ -86,9 +89,9 @@ def login():
 
         if success:
             session['logged_in'] = success
-            return render_template('login.html',logged_in=True)
+            return render_template('home.html',logged_in=True,contest_started=contest_started,username=username)
         else:
-            return render_template('home.html',logged_in=False,error=True)
+            return render_template('home.html',logged_in=False,error=True,contest_started=contest_started)
 
 
     else:
@@ -99,9 +102,10 @@ def login():
 @app.route('/logout',methods=['GET','POST'])
 def logout():
 
-    if request.method == 'POST':
-        if 'logged_in' in session:
-            del session['logged_in']
+    if 'logged_in' in session:
+        print("apparently deleting session")
+        del session['logged_in']
+
     return render_template('home.html',logged_in=False)
 
 #------------------------------------------------------------------------#
@@ -118,32 +122,26 @@ def logout():
 @app.route('/home')
 def home_page():
     logged_in = True
+    username = "Guest"
     if not session.get('logged_in'):
         logged_in = False
-    return render_template('home.html',logged_in=logged_in)
+    else:
+        username = get_name(session['logged_in'])
+    return render_template('home.html',contest_started=contest_started,username=username)
 
 
 @app.route('/utilities')
 @requires_login
 def utilities_page():
-    return render_template('utilities.html')
+    gist_urls = get_gist_urls()
+    return render_template('utilities.html',gist_urls=gist_urls)
 
 
 
-## Problems
-# 1) Galaxies
-# 2) Shleeble number
-# 3) zlnop propety search
-# 4) sum of numbers 
-# 5) traverse tree
-
-## Ordered by difficulty -
-# 4, 1, 5, 2, 3
-# A, B, C, D, E
-
-## Map problem letters to characters
-
-
+@app.route('/rules')
+@requires_login
+def rules_page():
+    return render_template('rules.html')
 
 @app.route('/problems')
 @requires_login
@@ -157,7 +155,9 @@ def problems_page():
     return render_template(
         'problems.html',
         completed_problems=completed_problems,
-        incomplete_problems=incomplete_problems
+        incomplete_problems=incomplete_problems,
+        num2word=num2word,
+        user_points=get_user_points(user_id)
         )
 
 
@@ -165,19 +165,66 @@ def problems_page():
 @app.route('/problem<problem_num>')
 @requires_login
 def problem_page(problem_num,no_answer=False):
+    if not has_contest_started():
+        return render_template('timer.html',not_started=True)
+
+    problem_points = get_problem_points(problem_num)
     return render_template(
         "problem" + str(problem_num) + '.html',
         no_answer=no_answer,
         input_file='/static/problems/input_' + str(problem_num) + '.txt',
-        problem_num=problem_num
+        problem_num=problem_num,
+        problem_points = get_problem_points(problem_num)
     )
 
+@app.route('/time_left')
+@requires_login
+def timer_page():
+    contest_start_time = get_contest_start_time()
+    if contest_start_time == None:
+        return render_template("timer.html",not_started=True)
 
+    seconds_left = (120*60) - int(time.time() - contest_start_time) 
+
+    # seconds_left = (120*60) - int(5) 
+
+    minutes = str(seconds_left // 60)
+    seconds = str(seconds_left % 60)
+    if len(minutes) == 1:
+        minutes = '0' + minutes
+    if len(seconds) == 1:
+        seconds = '0' + seconds
+
+    return render_template("timer.html",minutes=minutes,seconds=seconds,total_seconds = seconds_left)
+
+
+def has_contest_started():
+    db = get_db()
+    cur = db.execute('select contest_started from  contest_logistics')
+    contest_started = cur.fetchall()[0]['contest_started']
+    return contest_started
 
     
+@app.cli.command('start_contest')
+def start_contest():
+    contest_start_time = time.time()
+    db = get_db()
+    cur = db.execute(
+        'update contest_logistics set contest_started = ?, contest_start_time = ?',
+        [1,contest_start_time]
+    )
+    db.commit()
+    print("Contest started at %s." % datetime.datetime.now() )
 
 
-
+def get_contest_start_time():
+    db = get_db()
+    cur = db.execute('select contest_start_time from contest_logistics')
+    temp = cur.fetchall()
+    contest_start_time = None
+    if len(temp):
+        contest_start_time = temp[0]['contest_start_time']
+    return contest_start_time
 
 
 
@@ -296,6 +343,7 @@ def init_db():
     db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
+    db.execute('insert into contest_logistics (contest_started) values (0)')
     db.commit()
     print('Initialized the database.')
 
@@ -322,8 +370,7 @@ def authenticate_user(username,hashed_pass):
 def get_completed_problems(user_id):
     db = get_db()
     cur = db.execute('select * from progress where user_id = ?;', [user_id])
-    problems = [row['problem_num'] for row in cur.fetchall()]
-    print("completed problems:", problems)
+    problems = {row['problem_num']:get_problem_points(row['problem_num']) for row in cur.fetchall()}
 
     return problems
 
@@ -331,8 +378,9 @@ def get_incomplete_problems(user_id):
     db = get_db()
     cur = db.execute('select * from problems')
     all_problems = [row['problem_num'] for row in cur.fetchall()]
+
     completed_problems = get_completed_problems(user_id)
-    incomplete_problems = [prob for prob in all_problems if prob not in completed_problems]
+    incomplete_problems = {prob:get_problem_points(prob) for prob in all_problems if prob not in completed_problems}
     # incomplete_problems.sort()
     return incomplete_problems
 
@@ -347,6 +395,11 @@ def check_answer(problem_num,answer):
     return str(answer) == str(correct_answer)
 
 
+def get_user_points(user_id):
+    db = get_db()
+    cur = db.execute('select points from users where user_id = ?', [user_id])
+    user_points = cur.fetchall()[0]['points']
+    return user_points
 
 
 
@@ -388,11 +441,30 @@ def mark_as_completed(problem_num,user_id):
 
 #####
 
+def num2word(num):
+    words = {
+    1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven'
+    }
+    return words[num]
+
+
+def get_problem_points(problem_num):
+    db = get_db()
+    cur = db.execute('select problem_points from problems where problem_num = ?', [problem_num])
+    problem_points = cur.fetchall()[0]['problem_points']
+    return problem_points
+
 def get_name(user_id):
     db = get_db()
     cur = db.execute('select username from users where user_id = ?',[user_id])
     return cur.fetchall()[0]['username']
 
+def get_gist_urls():
+    db = get_db()
+    cur = db.execute('select * from gist_urls')
+    rows = cur.fetchall()
+    gist_urls = {row['problem_num']:row['gist_url'] for row in rows}
+    return gist_urls
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

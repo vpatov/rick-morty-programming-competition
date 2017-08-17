@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block body %}
+
+{% if not_started %}
+<center><h2> Contest not started yet. </h2></center>
+{% else %}
+<!-- Timer stuff -->
+<div class="timer">
+    <p id="time">{{minutes}} : {{seconds}}</p>
+</div>
+
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/timer.js"></script>
+
+
+<script>
+  var seconds = {{total_seconds}};
+</script>
+<!-- end timer stuff -->
+{% endif %}
+{% endblock %}

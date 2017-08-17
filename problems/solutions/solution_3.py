@@ -21,10 +21,19 @@ def get_solution(f=None):
     for i in range(0,len(galaxies)):
         galx,galy = galaxies[i][1],galaxies[i][2]
         utility1 = utility(galaxies[i],0,0)
-        for j in range(i+1,len(galaxies)):
+        for j in range(0,len(galaxies)):
             tot_utility = utility1 + utility(galaxies[j],galx,galy)
             if tot_utility > max_utility:
                 max_utility = tot_utility
                 max_galaxies = galaxies[i][0],galaxies[j][0]
 
+
+
+
+
+
     return int(max_utility)
+
+if __name__ == '__main__':
+    print(get_solution(open('prob3_in.txt','r')))
+

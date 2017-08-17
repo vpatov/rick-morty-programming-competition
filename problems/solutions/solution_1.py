@@ -1,4 +1,4 @@
-def get_solution(f):
+def get_solution(f=None):
 	data = f.read()
 
 	level = 0

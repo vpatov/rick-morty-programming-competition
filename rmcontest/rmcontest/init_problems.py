@@ -19,7 +19,7 @@ def get_filename(filepath):
 problem_points = {
 	1:1,
 	2:1,
-	3:1,
+	3:2,
 	4:2,
 	5:3,
 	6:4,
@@ -27,25 +27,37 @@ problem_points = {
 }
 
 
-problems_dir = os.path.join(os.getcwd(),'static','problems')
-sys.path.insert(0, problems_dir)
+solutions_dir = os.path.join(os.environ['RMCONTEST_ROOT'],'problems','solutions')
+input_dir = os.path.join(os.environ['RMCONTEST_ROOT'],'problems','input')
+sys.path.insert(0, solutions_dir)
 
 solution_modules = list(
 	map(
 		get_filename,
 		filter(
 			lambda x: x.startswith('solution') and x.endswith('.py'),
-			os.listdir(problems_dir)
+			os.listdir(solutions_dir)
 			)
 		)
 	)
 
 conn = sqlite3.connect("rmcontest.db")
+cur = conn.execute('drop table if exists problems')
+cur = conn.execute(
+	"""
+	create table problems (
+	    problem_num INTEGER PRIMARY KEY,
+	    problem_answer TEXT NOT NULL,
+	    problem_points INTEGER  
+	);
+	"""
+)
+
 for solution_module in solution_modules:
 	problem_num = int(solution_module[solution_module.index('_') + 1:])
 	mod = importlib.import_module(solution_module)
 
-	input_filepath = os.path.join(problems_dir,'input_' + str(problem_num) + '.txt')
+	input_filepath = os.path.join(input_dir,'input_' + str(problem_num) + '.txt')
 	solution = None
 	try:
 		input_file = open(input_filepath,'r')

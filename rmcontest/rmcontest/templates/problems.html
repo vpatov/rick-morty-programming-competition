@@ -2,38 +2,47 @@
 
 {% block body %}
 	{% if incomplete_problems|length > 0 %}
-	<div class=h2i><center><u>Incomplete Problems</u></center></div>
-	<div class=problems_list>
-		<div class=uncompleted_problems_list>
-			<ul>
-		    	{% for problem in incomplete_problems %}
+	<h2><center>Incomplete</center></h2>
+	<table>
+		<tr>
+			<th> # </th>
+			<th> Points </th>
+		</tr>
+		{% for problem in incomplete_problems %}
 		    	
-		    	
-		    	<li>
-		    	<a href="{{url_for('problem_page',problem_num=problem)}}"> {{"~!!~"*problem}}-- PROBLEM {{problem}} --{{"~!!~"*problem}}~</a> 
-		    	</li>
-		    	{% endfor %}
-	    	</ul>
-    	</div>
-	</div>
+			<tr>
+				<th class="inc"><a href="{{url_for('problem_page',problem_num=problem)}}"> {{num2word(problem)}} </a></th>
+				<th class="inc">{{incomplete_problems[problem]}}</th>
+			</tr>
+
+		{% endfor %}
+
+	</table>
 	{% endif %}
 
-<br><br><br>
+	{% if completed_problems|length > 0 %}
+		<h2><center>Completed</center></h2>
+		<table>
+			<tr>
+				<th> # </th>
+				<th> Points </th>
+			</tr>
+			{% for problem in completed_problems %}
+			    	
+				<tr>
+					<th class="com"><a href="{{url_for('problem_page',problem_num=problem)}}"> {{num2word(problem)}} </a></th>
+					<th class="com">{{completed_problems[problem]}}</th>
+				</tr>
 
-	<div class=h2c><center><u>Finished Problems</u></center></div>
-    <div class=problems_list>
-    	<div class=completed_problems_list>
-			<ul>
-		    	{% for problem in completed_problems %}
-		    	
-		    	
-		    	<li>
-		    	<a href="{{url_for('problem_page',problem_num=problem)}}">  PROBLEM {{problem}}</a> 
-		    	</li>
-		    	{% endfor %}
-	    	</ul>
-    	</div>
-	</div>
-    
+			{% endfor %}
+
+
+		</table>
+
+		<h2><center>Total Points: {{total_points}} </center></h2>
+
+    {% endif %}
+
+
     
 {% endblock %}

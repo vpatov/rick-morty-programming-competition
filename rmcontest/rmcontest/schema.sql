@@ -32,4 +32,15 @@ create table winners (
     username TEXT NOT NULL
 );
 
--- progress_id INTEGER PRIMARY KEY AUTOINCREMENT,
+drop table if exists contest_logistics;
+create table contest_logistics (
+    contest_started INTEGER NOT NULL,
+    contest_start_time REAL
+);
+
+drop table if exists gist_urls;
+create table gist_urls (
+  problem_num INTEGER PRIMARY KEY,
+  gist_url TEXT NOT NULL
+);
+

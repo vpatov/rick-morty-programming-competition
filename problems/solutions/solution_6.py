@@ -1,4 +1,4 @@
-def get_solution(f):
+def get_solution(f=None):
 	from collections import Counter
 	from math import log
 

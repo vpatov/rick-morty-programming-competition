@@ -9,6 +9,19 @@ users = {
 	}
 
 conn = sqlite3.connect("rmcontest.db")
+conn.execute('drop table if exists users')
+conn.execute(
+	"""
+	create table users (
+		user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		username TEXT NOT NULL,
+		hashed_password TEXT NOT NULL,
+		time_last_attempt REAL,
+		points INTEGER NOT NULL
+	);	
+	"""
+)
+
 for user in users:
 	hashed_password = sha1(users[user].encode('ascii')).hexdigest()
 	conn.execute('insert into users (username, hashed_password,time_last_attempt, points)'\

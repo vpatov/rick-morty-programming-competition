@@ -19,8 +19,26 @@
         <a href="{{ item.url }}">{{ item.label }}</a>
     </li>
     {% endfor %}
+    {% if session.get('logged_in') %}
+    <li class='active'>
+    	<log>
+    	<a href="{{url_for('logout')}}">
+    	Logout
+    	</a>
+    	</log>
+    </li>
+    {% else %}
+    <li class='active'>
+        <log>
+        <a href="{{ url_for('home_page') }}">
+        Login
+        </a>
+        </log>
+    </li>
+    {% endif %}
 </ul>
 </div>
+
 
 
 

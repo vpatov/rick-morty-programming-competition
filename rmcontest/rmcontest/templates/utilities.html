@@ -2,51 +2,21 @@
  
 {% block body %}
 
+<style type="text/css">
+  .gist {width: 600px !important; align-content: center;}
+  .gist-file
+  .gist-data {max-height: 400px; max-width: 600px;}
+</style>
+
 <h3>If you want to get to the crux of each problem faster, you can use these templates for reading in from a file.</h3>
+{% for problem_num in gist_urls %}
 
-<center><h2>Problem 1</h2></center>
-<!-- <blockquote><pre><code><div class=code>
+<center><h2>Problem {{problem_num}}</h2></center>
 
-	f = open('problem1_input.txt','r')
-	galaxies = [line.strip().split(',') for line in f.readlines()]
-	for galaxy in galaxies:
-	    galaxy[1] = int(galaxy[1])
-	    galaxy[2] = int(galaxy[2])
-	    galaxy[3] = int(galaxy[3])
 
-</div></code></pre></blockquote> -->
-<style type="text/css">
-  .gist {width: 600px !important; align-content: center;}
-  .gist-file
-  .gist-data {max-height: 400px; max-width: 600px;}
-</style>
+<center><script src="{{ gist_urls[problem_num] }}"></script></center>
 
-<center><script src="https://gist.github.com/vpatov/e30c1107f988e30e962b6667a73683c3.js"></script></center>
+{% endfor %}
 
-<p></p>
-<center><h2>Problem 2</h2></center>
-<center><h3>Reading from file not necessary for problem.</h3></center>
 
-<center><h2>Problem 3</h2></center>
-<!-- <blockquote><pre><code><div class=code>
-
-	f = open('problem1_input.txt','r')
-	galaxies = [line.strip().split(',') for line in f.readlines()]
-	for galaxy in galaxies:
-	    galaxy[1] = int(galaxy[1])
-	    galaxy[2] = int(galaxy[2])
-	    galaxy[3] = int(galaxy[3])
-
-</div></code></pre></blockquote> -->
-<style type="text/css">
-  .gist {width: 600px !important; align-content: center;}
-  .gist-file
-  .gist-data {max-height: 400px; max-width: 600px;}
-</style>
-
-<center><script src="https://gist.github.com/vpatov/f916b006dfa4861c2e76172c66b6dcc3.js"></script></center>
-
-<br>
-<br>
-<br>
 {% endblock %}
