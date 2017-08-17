@@ -203,6 +203,8 @@ def has_contest_started():
     db = get_db()
     cur = db.execute('select contest_started from  contest_logistics')
     contest_started = cur.fetchall()[0]['contest_started']
+    db.commit()
+    db.close()
     return contest_started
 
     
@@ -215,6 +217,7 @@ def start_contest():
         [1,contest_start_time]
     )
     db.commit()
+    db.close()
     print("Contest started at %s." % datetime.datetime.now() )
 
 
@@ -225,6 +228,9 @@ def get_contest_start_time():
     contest_start_time = None
     if len(temp):
         contest_start_time = temp[0]['contest_start_time']
+
+    db.commit()
+    db.close()
     return contest_start_time
 
 
@@ -346,6 +352,7 @@ def init_db():
         db.cursor().executescript(f.read())
     db.execute('insert into contest_logistics (contest_started) values (0)')
     db.commit()
+    db.close()
     print('Initialized the database.')
 
 
@@ -358,10 +365,15 @@ def authenticate_user(username,hashed_pass):
     # for test_user in test_users:
     #     print(test_user['username'],test_user['hashed_password'])
     # print("users:%s" % str(users))
+
+    db.commit()
+    db.close()
     if len(users):
         return users[0]['user_id']
     else:
         return False
+
+
 
 
 ### Getting problem information
@@ -371,7 +383,10 @@ def authenticate_user(username,hashed_pass):
 def get_completed_problems(user_id):
     db = get_db()
     cur = db.execute('select * from progress where user_id = ?;', [user_id])
+
     problems = {row['problem_num']:get_problem_points(row['problem_num']) for row in cur.fetchall()}
+    db.commit()
+    db.close()
     return problems
 
 def seconds2minutes(seconds):
@@ -386,6 +401,8 @@ def get_time_finished(user_id):
         row['problem_num']:seconds2minutes(row['time_finished'] - get_contest_start_time()) 
         for row in cur.fetchall()
         }
+    db.commit()
+    db.close()
     return time_finished
 
 def get_incomplete_problems(user_id):
@@ -396,12 +413,16 @@ def get_incomplete_problems(user_id):
     completed_problems = get_completed_problems(user_id)
     incomplete_problems = {prob:get_problem_points(prob) for prob in all_problems if prob not in completed_problems}
     # incomplete_problems.sort()
+    db.commit()
+    db.close()
     return incomplete_problems
 
 def get_problem_answer(problem_num):
     db = get_db()
     cur = db.execute('select * from problems where problem_num = ?',[problem_num])
     problem_answer = cur.fetchall()[0]['problem_answer']
+    db.commit()
+    db.close()
     return str(problem_answer)
 
 def check_answer(problem_num,answer):
@@ -413,6 +434,8 @@ def get_user_points(user_id):
     db = get_db()
     cur = db.execute('select points from users where user_id = ?', [user_id])
     user_points = cur.fetchall()[0]['points']
+    db.commit()
+    db.close()
     return user_points
 
 
@@ -428,11 +451,14 @@ def get_time_left_to_wait(user_id,overwrite=True):
     current_time = time.time()
     diff = int(current_time - time_last_attempt)
     if diff < 30:
+        db.commit()
+        db.close()
         return 30 - diff
     else:
         if overwrite:
             cur = db.execute('update users set time_last_attempt = ? where user_id = ?;',[current_time,user_id])
             db.commit()
+            db.close()
         return 0
         ### change value of time_last_attempt to current_time
 
@@ -452,6 +478,7 @@ def mark_as_completed(problem_num,user_id):
     cur = db.execute('update users set points = ? where user_id = ?',[user_points + problem_points, user_id])
 
     db.commit()
+    db.close()
 
 #####
 
@@ -469,18 +496,26 @@ def get_problem_points(problem_num):
     db = get_db()
     cur = db.execute('select problem_points from problems where problem_num = ?', [problem_num])
     problem_points = cur.fetchall()[0]['problem_points']
+    db.commit()
+    db.close()
     return problem_points
 
 def get_name(user_id):
     db = get_db()
     cur = db.execute('select username from users where user_id = ?',[user_id])
-    return cur.fetchall()[0]['username']
+    ret = cur.fetchall()[0]['username']
+    db.commit()
+    db.close()
+    
+    return ret
 
 def get_gist_urls():
     db = get_db()
     cur = db.execute('select * from gist_urls')
     rows = cur.fetchall()
     gist_urls = {row['problem_num']:row['gist_url'] for row in rows}
+    db.commit()
+    db.close()
     return gist_urls
 
 if __name__ == '__main__':
