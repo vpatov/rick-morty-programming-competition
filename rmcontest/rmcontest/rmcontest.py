@@ -133,6 +133,8 @@ def home_page():
 @app.route('/utilities')
 @requires_login
 def utilities_page():
+    if not has_contest_started():
+        return render_template('timer.html',not_started=True)
     gist_urls = get_gist_urls()
     return render_template('utilities.html',gist_urls=gist_urls)
 
@@ -185,7 +187,7 @@ def timer_page():
     if contest_start_time == None:
         return render_template("timer.html",not_started=True)
 
-    seconds_left = (120*60) - int(time.time() - contest_start_time) 
+    seconds_left = (105*60) - int(time.time() - contest_start_time) 
 
     # seconds_left = (120*60) - int(5) 
 
@@ -253,7 +255,7 @@ def get_contest_start_time():
 @requires_login
 @app.route('/answer', methods=['POST'])
 def process_answer():
-    problem_num = request.form['problem_num']
+    problem_num = int(request.form['problem_num'])
     answer = request.form["answer"].strip()
     user_id = session['logged_in']
 
@@ -262,6 +264,10 @@ def process_answer():
     ## see if the user has answered this problem already,
     ## and let them know if they have
     completed_problems = get_completed_problems(user_id)
+    print("TESTTESTTEST")
+    print(problem_num)
+    
+    print(completed_problems)
     if problem_num in completed_problems:
         return render_template("already_answered.html")
 
