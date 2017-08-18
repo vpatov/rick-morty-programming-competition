@@ -23,6 +23,8 @@ users = {user:rand_pass(user) for user in [
 	]
 }
 
+users.update({'admin':'asdpasdo'})
+
 
 
 conn = sqlite3.connect("rmcontest.db")
