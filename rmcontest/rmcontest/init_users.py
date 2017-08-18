@@ -3,11 +3,6 @@ from hashlib import sha1
 import sys
 import random
 
-# users = {
-# 	'vasia':'1234',
-# 	'danny':'2345',
-# 	'vander':'3456'
-# 	}
 
 def rand_pass(username):
 	import string
